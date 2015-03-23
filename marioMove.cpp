@@ -143,8 +143,8 @@ bool init() {
 
 // load the files for the program
 bool load_files() {
-	mario = load_image( "big mario motion.png" );	// loads all the mario images
-	background = load_image( "1-1.png" );		// loads the level background
+	mario = load_image( "images/bigMarioMotion.png" );	// loads all the mario images
+	background = load_image( "images/level1-1.png" );		// loads the level background
 
 	// if there was a problem in loading the dot
 	if( mario == NULL ) {
