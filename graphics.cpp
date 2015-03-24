@@ -40,7 +40,7 @@ SDL_Surface* Graphics::load_image(string filename) {
 }
 
 // apply the optimized image
-void Graphics::apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip=NULL) {
+void Graphics::apply_surface(int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip) {
 	SDL_Rect offset;	// holds offsets
 
 	// get offsets
@@ -79,8 +79,8 @@ bool Graphics::init() {
 
 // load the files for the program
 bool Graphics::load_files() {
-	mario=load_image("bigMarioMotion.png");	// loads all the mario images
 	background=load_image("level1-1.png");	// loads the level background
+	mario=load_image("bigMarioMotion.png");	// loads all the mario images
 
 	// if there was a problem in loading the dot
 	if(mario==NULL) {
@@ -174,9 +174,4 @@ int Graphics::getLevelH() {
 // return the screen
 SDL_Surface *Graphics::getScreen() {
 	return screen;
-}
-
-// return the camera's view
-SDL_Rect *Graphics::getCamera() {
-	return camera;
 }

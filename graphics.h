@@ -35,7 +35,6 @@ protected:
 	SDL_Surface* screen;			// display window
 	SDL_Surface* background;		// background of the display window
 	SDL_Surface* mario;			// mario background
-	SDL_Rect* camera;			// view of the level
 	SDL_Rect clipsRight[4];			// images for mario moving right
 	SDL_Rect clipsLeft[4];			// images for mario moving left
 	SDL_Rect clipsStill[1];			// image for mario crouching
