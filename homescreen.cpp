@@ -1,30 +1,56 @@
-/*This source code copyrighted by Lazy Foo' Productions (2004-2013)
-and may not be redistributed without written permission.*/
+/* Jose Suarez
+ * March 21, 2015
+ * Home screen attempt for SUPER MARIO BROS Project
+ */
+
+/*
+ *
+ * FIX ISSUES:
+ * 
+ * 1) Get rid of original Player Goomba
+ *
+ * 2) Press ENTER = go into game
+ *
+ */
 
 //The headers
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include <string>
 
+using namespace std;
+
 //Screen attributes
-const int SCREEN_WIDTH = 680;
-const int SCREEN_HEIGHT = 420;
+const int SCREEN_WIDTH = 692;
+const int SCREEN_HEIGHT = 484;
 const int SCREEN_BPP = 32;
 
 //The surfaces
 SDL_Surface *background = NULL;
-SDL_Surface *foo = NULL;
+SDL_Surface *goomba = NULL;
 SDL_Surface *screen = NULL;
+SDL_Surface *playWorld = NULL;
+
+class Goomba {
+	private:
+		int x,y;
+		int play;
+	public:
+		Goomba();
+		void handle_input();
+		void show();
+}; //end GOOMBA CLASS
+
 
 //The event structure
 SDL_Event event;
 
-SDL_Surface *load_image( std::string filename )
+SDL_Surface *load_image( string filename )
 {
     //The image that's loaded
     SDL_Surface* loadedImage = NULL;
 
-    //The optimized image that will be used
+    //The optimized surface that will be used
     SDL_Surface* optimizedImage = NULL;
 
     //Load the image
@@ -33,38 +59,40 @@ SDL_Surface *load_image( std::string filename )
     //If the image loaded
     if( loadedImage != NULL )
     {
-        //Create an optimized image
+        //Create an optimized surface
         optimizedImage = SDL_DisplayFormat( loadedImage );
 
-        //Free the old image
+        //Free the old surface
         SDL_FreeSurface( loadedImage );
 
-        //If the image was optimized just fine
+        //If the surface was optimized
         if( optimizedImage != NULL )
         {
-            //Map the color key
-            Uint32 colorkey = SDL_MapRGB( optimizedImage->format, 0xFF , 0xFF , 0xFF );
-
-            //Set all pixels of color R 0, G 0xFF, B 0xFF to be transparent
+	    //Map the color key
+	    Uint32 colorkey = SDL_MapRGB( optimizedImage->format, 0xFF, 0xFF, 0xFF);
+		
+            //Color key surface
             SDL_SetColorKey( optimizedImage, SDL_SRCCOLORKEY, colorkey );
+
+//            SDL_SetColorKey( optimizedImage, SDL_SRCCOLORKEY, SDL_MapRGB( optimizedImage->format, 0, 0xFF, 0xFF ) );
         }
     }
 
-    //Return the optimized image
+    //Return the optimized surface
     return optimizedImage;
 }
 
-void apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* destination )
+void apply_surface( int x, int y, SDL_Surface* source, SDL_Surface* destination, SDL_Rect* clip = NULL )
 {
-    //Temporary rectangle to hold the offsets
+    //Holds offsets
     SDL_Rect offset;
 
-    //Get the offsets
+    //Get offsets
     offset.x = x;
     offset.y = y;
 
-    //Blit the surface
-    SDL_BlitSurface( source, NULL, destination, &offset );
+    //Blit
+    SDL_BlitSurface( source, clip, destination, &offset );
 }
 
 bool init()
@@ -72,7 +100,7 @@ bool init()
     //Initialize all SDL subsystems
     if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 )
     {
-        return 1;
+        return false;
     }
 
     //Set up the screen
@@ -81,11 +109,11 @@ bool init()
     //If there was an error in setting up the screen
     if( screen == NULL )
     {
-        return 1;
+        return false;
     }
 
     //Set the window caption
-    SDL_WM_SetCaption( "Foo says \"Hello!\"", NULL );
+    SDL_WM_SetCaption( "SUPER MARIO BROS HOMESCREEN", NULL );
 
     //If everything initialized fine
     return true;
@@ -95,22 +123,26 @@ bool load_files()
 {
     //Load the background image
     background = load_image( "super-mario-bros-screen.jpg" );
+    goomba = load_image( "goomba" );
+    playWorld = load_image( "overworld_bg.png" );
 
-    //If the background didn't load
+    //If there was a problem in loading the background
     if( background == NULL )
     {
         return false;
     }
 
-    //Load the stick figure
-    foo = load_image( "Luigi.jpg" );
-
-    //If the stick figure didn't load
-    if( foo == NULL )
+    if( goomba == NULL )
     {
-        return false;
+	return false;
     }
 
+    if( playWorld == NULL )
+    {
+	return false;
+    }
+
+    //If everything loaded fine
     return true;
 }
 
@@ -118,16 +150,47 @@ void clean_up()
 {
     //Free the surfaces
     SDL_FreeSurface( background );
-    SDL_FreeSurface( foo );
+    SDL_FreeSurface( goomba );
+    SDL_FreeSurface( playWorld );
 
     //Quit SDL
     SDL_Quit();
 }
 
+//Constructor
+Goomba::Goomba() {
+	x=150;
+	y=260;
+	play=0;
+} //end
+
+void Goomba::handle_input() {
+
+	if (event.type == SDL_KEYDOWN ) {
+		switch (event.key.keysym.sym) {
+			case SDLK_UP: y=260; break;
+			case SDLK_DOWN: y=295; break;
+			case SDLK_RETURN: play=1; break;
+		} //end SWITCH
+	} //end IF
+} //end
+
+void Goomba::show() {
+	if (play==0) {
+		apply_surface(0,0,background,screen);
+		apply_surface(x,y,goomba,screen);
+	} else if (play==1) {
+		apply_surface(0,0,playWorld,screen);
+	}
+} //end
+
+
 int main( int argc, char* args[] )
 {
     //Quit flag
     bool quit = false;
+
+	Goomba myGoomba;
 
     //Initialize
     if( init() == false )
@@ -141,33 +204,29 @@ int main( int argc, char* args[] )
         return 1;
     }
 
-    //Apply the surfaces to the screen
-    apply_surface( 0, 0, background, screen );
-    apply_surface( 240, 190, foo, screen );
+	//While the user hasn't quit
+	while( quit == false ) {
+		//While there's events to handle
+		while( SDL_PollEvent( &event ) ) {
 
-    //Update the screen
-    if( SDL_Flip( screen ) == -1 )
-    {
-        return 1;
-    }
+			myGoomba.handle_input();
 
-    //While the user hasn't quit
-    while( quit == false )
-    {
-        //While there's events to handle
-        while( SDL_PollEvent( &event ) )
-        {
-            //If the user has Xed out the window
-            if( event.type == SDL_QUIT )
-            {
-                //Quit the program
-                quit = true;
-            }
-        }
-    }
+			//If the user has Xed out the window
+			if( event.type == SDL_QUIT ) {
+				quit = true;
+			} //end IF
+		} //end INNER WHILE
+		
+		//Apply the background
+//			apply_surface( 0, 0, background, screen );
+			myGoomba.show();
 
-    //Free the surfaces and quit SDL
-    clean_up();
-
-    return 0;
+		//Update the screen
+		if( SDL_Flip( screen ) == -1 ) {
+			return 1;
+		}
+	}
+	
+	clean_up();
+	return 0;
 }
