@@ -14,7 +14,7 @@ int main( int argc, char* args[] ) {
 	bool quit=false;		// quit flag
 	Graphics myGraphics;		// create graphics object
 	Mario myMario;			// create mario object
-	myGraphics.set_clips();		// sets the necessary images
+	myMario.set_clips();		// sets the necessary images
 	Timer fps;			// frame rate regulator
 	SDL_Event event;
 
@@ -24,10 +24,11 @@ int main( int argc, char* args[] ) {
 	background=myGraphics.load_image("images/level1-1.png");
 	mario=myGraphics.load_image("images/bigMarioMotion.png");
 
-	while(quit==false) {			// user has not quit
+	while(quit==false) {				// user has not quit
      		fps.start();				// start the frame timer
         	while(SDL_PollEvent(&event)) {		// there are events to handle
-        		myMario.handle_input();		// handle events for mario
+			//cout << "Event: " << &event << endl;
+        		myMario.handle_input(event);		// handle events for mario
         		if(event.type==SDL_QUIT) {	// user has Xed out the window
                 		quit=true;		// quit the program
         		}
@@ -38,8 +39,16 @@ int main( int argc, char* args[] ) {
 
 		// reset the screen and display updated scene
 		myGraphics.clearScreen(myGraphics.getScreen());
-        	myGraphics.apply_surface( 0, 0, background, myGraphics.getScreen(), myGraphics.getCamera() );
-       		myMario.show();
+        	myGraphics.apply_surface( 0, 0, background, myGraphics.getScreen(), myMario.getCamera() );
+       		//myMario.show();
+		myMario.updatePos();
+
+		if(myMario.getStatus()==0) {
+			myGraphics.apply_surface(myMario.getX(), myMario.getY(), mario, myGraphics.getScreen(), myMario.getRclip());
+		}
+		else if(myMario.getStatus()==1) {
+			myGraphics.apply_surface(myMario.getX(), myMario.getY(), mario, myGraphics.getScreen(), myMario.getLclip());
+		}
 
 		// update the screen
         	if(SDL_Flip(myGraphics.getScreen())==-1) {
@@ -52,7 +61,8 @@ int main( int argc, char* args[] ) {
     		}
 	}
 
-	myGraphics.clean_up();	// free surfaces
+	SDL_FreeSurface(mario);
+	SDL_FreeSurface(background);
 
 	return 0;
 }
