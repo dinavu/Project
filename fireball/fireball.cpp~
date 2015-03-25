@@ -1,6 +1,9 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include <string>
+#include <iostream>
+#include <cmath>
+using namespace std;
 
 //Screen
 const int SCREEN_WIDTH = 640;
@@ -35,6 +38,8 @@ class Fireball
 	private:
 	int offSet;
 	int velocity;
+	int yvelocity;
+	int yoffSet;
 	int frame;
 	int status;
 
@@ -105,7 +110,7 @@ void set_clips()
 	clipsRight[ 0 ].h = FIREBALL_HEIGHT;
 
 	clipsRight[ 1 ].x = FIREBALL_WIDTH;
-	clipsRight[ 1 ].y = FIREBALL_HEIGHT+15;
+	clipsRight[ 1 ].y = FIREBALL_HEIGHT;
 	clipsRight[ 1 ].w = FIREBALL_WIDTH;
 	clipsRight[ 1 ].h = FIREBALL_HEIGHT;
 
@@ -115,7 +120,7 @@ void set_clips()
 	clipsRight[ 2 ].h = FIREBALL_HEIGHT;
 
 	clipsRight[ 3 ].x = FIREBALL_WIDTH * 3;
-	clipsRight[ 3 ].y = FIREBALL_HEIGHT+15;
+	clipsRight[ 3 ].y = FIREBALL_HEIGHT;
 	clipsRight[ 3 ].w = FIREBALL_WIDTH;
 	clipsRight[ 3 ].h = FIREBALL_HEIGHT;
 
@@ -125,7 +130,7 @@ void set_clips()
 	clipsLeft[ 0 ].h = FIREBALL_HEIGHT;
 
 	clipsLeft[ 1 ].x = FIREBALL_WIDTH;
-	clipsLeft[ 1 ].y = FIREBALL_HEIGHT+15;
+	clipsLeft[ 1 ].y = FIREBALL_HEIGHT;
 	clipsLeft[ 1 ].w = FIREBALL_WIDTH;
 	clipsLeft[ 1 ].h = FIREBALL_HEIGHT;
 
@@ -135,7 +140,7 @@ void set_clips()
 	clipsLeft[ 2 ].h = FIREBALL_HEIGHT;
 
 	clipsLeft[ 3 ].x = FIREBALL_WIDTH * 3;
-	clipsLeft[ 3 ].y = FIREBALL_HEIGHT+15;
+	clipsLeft[ 3 ].y = FIREBALL_HEIGHT;
 	clipsLeft[ 3 ].w = FIREBALL_WIDTH;
 	clipsLeft[ 3 ].h = FIREBALL_HEIGHT;
 }
@@ -181,6 +186,8 @@ Fireball::Fireball()
 {
 	offSet = 0;
 	velocity = 0;
+	yvelocity = 0;
+	yoffSet = SCREEN_HEIGHT - FIREBALL_HEIGHT;
 
 	frame = 0;
 	status = FIREBALL_RIGHT;
@@ -191,26 +198,32 @@ void Fireball::handle_events()
 
 	if( event.type == SDL_KEYDOWN )
 	{
-		switch( event.key.keysym.sym )
-		{
-	
-			 case SDLK_RIGHT: 
-				velocity += FIREBALL_WIDTH / 4;
-				break; 
-			 case SDLK_LEFT: 
-				velocity -= FIREBALL_WIDTH / 4;
-				break;		
+		if event.key.keysym.sym == SDLK_SPACE
+		{ 
+				velocity = FIREBALL_WIDTH / 4;
+				yvelocity = sqrt(FIREBALL_WIDTH/4);
 		}
 	}
 }
 
 void Fireball::move()
 {
-	offSet += 3;
+	offSet += velocity/2;
+	yoffSet += yvelocity;
 
 	if( ( offSet < 0) || (offSet + FIREBALL_WIDTH > SCREEN_WIDTH ) )
 	{
-		offSet -= 3;
+		offSet -= velocity;
+		yvelocity = 0;
+	}
+
+	if ( yoffSet > (SCREEN_HEIGHT-FIREBALL_HEIGHT/2))
+	{
+		yvelocity = -sqrt(FIREBALL_WIDTH/4);
+	}
+	else if (yoffSet < (SCREEN_HEIGHT - FIREBALL_HEIGHT) )
+	{
+		yvelocity = sqrt(FIREBALL_WIDTH/4);
 	}
 }
 
@@ -228,19 +241,20 @@ void Fireball::show()
 		frame++;
 	}
 
-	if (frame >= 4 )
-	{
-		frame = 0;
-	}
+	frame = frame % 3;
+	
+
+
 
 	if ( status == FIREBALL_RIGHT)
 	{
-		apply_surface( offSet, SCREEN_HEIGHT - FIREBALL_HEIGHT, fireball, screen, &clipsRight[ frame ] );
+		apply_surface( offSet, yoffSet , fireball, screen, &clipsRight[ frame ] );
 	}
 	else if (status ==FIREBALL_LEFT)
 	{
-		apply_surface( offSet, SCREEN_HEIGHT - FIREBALL_HEIGHT, fireball, screen, &clipsLeft[ frame ]);
+		apply_surface( offSet, yoffSet, fireball, screen, &clipsLeft[ frame ]);
 	}
+
 }
 
 

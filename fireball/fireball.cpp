@@ -1,6 +1,9 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include <string>
+#include <iostream>
+#include <cmath>
+using namespace std;
 
 //Screen
 const int SCREEN_WIDTH = 640;
@@ -36,6 +39,7 @@ class Fireball
 	int offSet;
 	int velocity;
 	int yvelocity;
+	int yoffSet;
 	int frame;
 	int status;
 
@@ -182,7 +186,8 @@ Fireball::Fireball()
 {
 	offSet = 0;
 	velocity = 0;
-	yvelocity = -5;
+	yvelocity = 0;
+	yoffSet = SCREEN_HEIGHT - FIREBALL_HEIGHT;
 
 	frame = 0;
 	status = FIREBALL_RIGHT;
@@ -193,34 +198,37 @@ void Fireball::handle_events()
 
 	if( event.type == SDL_KEYDOWN )
 	{
-		switch( event.key.keysym.sym )
-		{
-	
-			 case SDLK_RIGHT: 
-				velocity += FIREBALL_WIDTH / 4;
-				break; 
-			 case SDLK_LEFT: 
-				velocity -= FIREBALL_WIDTH / 4;
-				break;		
+		if (event.key.keysym.sym == SDLK_SPACE)
+		{ 
+				velocity = FIREBALL_WIDTH / 4;
+				yvelocity = sqrt(FIREBALL_WIDTH/4);
 		}
 	}
 }
 
 void Fireball::move()
 {
-	offSet += velocity;
-	
+	offSet += velocity/2;
+	yoffSet += yvelocity;
 
 	if( ( offSet < 0) || (offSet + FIREBALL_WIDTH > SCREEN_WIDTH ) )
 	{
 		offSet -= velocity;
+		yvelocity = 0;
+	}
+
+	if ( yoffSet > (SCREEN_HEIGHT-FIREBALL_HEIGHT/2))
+	{
+		yvelocity = -sqrt(FIREBALL_WIDTH/4);
+	}
+	else if (yoffSet < (SCREEN_HEIGHT - FIREBALL_HEIGHT) )
+	{
+		yvelocity = sqrt(FIREBALL_WIDTH/4);
 	}
 }
 
 void Fireball::show()
 {
-	int y;
-
 
 	if( velocity < 0 )
 	{
@@ -233,28 +241,20 @@ void Fireball::show()
 		frame++;
 	}
 
-	if (frame >= 4 )
-	{
-		frame = 0;
-	}
+	frame = frame % 3;
+	
 
-	if ( SCREEN_HEIGHT - FIREBALL_HEIGHT + yvelocity > SCREEN_HEIGHT)
-	{
-		yvelocity = -5;
-	}
-	else if (SCREEN_HEIGHT + FIREBALL_HEIGHT + yvelocity > SCREEN_HEIGHT)
-	{
-		yvelocity = 5;
-	}
+
 
 	if ( status == FIREBALL_RIGHT)
 	{
-		apply_surface( offSet, SCREEN_HEIGHT - FIREBALL_HEIGHT + yvelocity, fireball, screen, &clipsRight[ frame ] );
+		apply_surface( offSet, yoffSet , fireball, screen, &clipsRight[ frame ] );
 	}
 	else if (status ==FIREBALL_LEFT)
 	{
-		apply_surface( offSet, SCREEN_HEIGHT - FIREBALL_HEIGHT + yvelocity, fireball, screen, &clipsLeft[ frame ]);
+		apply_surface( offSet, yoffSet, fireball, screen, &clipsLeft[ frame ]);
 	}
+
 }
 
 
