@@ -44,10 +44,10 @@ int main( int argc, char* args[] ) {
 		myMario.updatePos();
 
 		if(myMario.getStatus()==0) {
-			myGraphics.apply_surface(myMario.getX(), myMario.getY(), mario, myGraphics.getScreen(), myMario.getRclip());
+			myGraphics.apply_surface(myMario.getX()-myMario.getCamerax(), myMario.getY(), mario, myGraphics.getScreen(), myMario.getRclip());
 		}
 		else if(myMario.getStatus()==1) {
-			myGraphics.apply_surface(myMario.getX(), myMario.getY(), mario, myGraphics.getScreen(), myMario.getLclip());
+			myGraphics.apply_surface(myMario.getX()-myMario.getCamerax(), myMario.getY(), mario, myGraphics.getScreen(), myMario.getLclip());
 		}
 
 		// update the screen
