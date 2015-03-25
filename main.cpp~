@@ -26,7 +26,8 @@ int main( int argc, char* args[] ) {
 	SDL_Surface *fireball = NULL;
 	background=myGraphics.load_image("images/level1-1.png");
 	mario=myGraphics.load_image("images/bigMarioMotion.png");
-	fireball = myGraphics.load_image("fireball/fireball_sprites.png");	
+	fireball = myGraphics.load_image("fireball/fireball_sprites.png);
+	
 
 	while(quit==false) {				// user has not quit
      		fps.start();				// start the frame timer

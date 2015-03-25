@@ -468,7 +468,7 @@ void Fireball::move()
 	{
 		fireballyvelocity = -sqrt(FIREBALL_WIDTH/4);
 	}
-	else if (fireballyoffSet < (140) )
+	else if (fireballyoffSet < (180) )
 	{
 		fireballyvelocity = sqrt(FIREBALL_WIDTH/4);
 	}
