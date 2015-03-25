@@ -24,6 +24,8 @@ public:
 	SDL_Event* getEvent();
 	SDL_Rect *getRclip();
 	SDL_Rect *getLclip();
+	int getCamerax();
+	int getCameray();
 
 protected:
 	int x, y;		// the X and Y offsets of the dot

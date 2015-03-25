@@ -43,25 +43,18 @@ void Mario::handle_input(SDL_Event event) {
 	   		case SDLK_DOWN: xVel = 0; break;		// crouch
         	}
 	}
-
-	cout << "MARIO HANDLE INPUT" << endl;
-	cout << "xVel: " << xVel << endl;
-	cout << "yVel: " << yVel << endl;
-	cout << "x: " << x << endl;
-	cout << "y: " << y << endl;
-	cout << "mariowidth " << getWidth() << endl;
 }
 
 // update mario's velocity to move
 void Mario::move() {
-	x += xVel;	// move the dot left or right
+	x += xVel;	// move mario left or right
 
 	// if mario went too far to the left or right
 	if( ( x < 0 ) || ( getX() + getWidth() > getLevelW() ) ) {
         	x -= xVel;	// move back
 	}
 
-	y += yVel;	// move the dot up or down
+	y += yVel;	// move mario up or down
 
 	// if mario went too far up or down
 	if( ( y < 0 ) || ( getY() + getHeight() > getLevelH() ) ) {
@@ -183,4 +176,12 @@ SDL_Rect *Mario::getRclip() {
 
 SDL_Rect *Mario::getLclip() {
 	return &clipsLeft[getFrame()];
+}
+
+int Mario::getCamerax() {
+	return camera.x;
+}
+
+int Mario::getCameray() {
+	return camera.y;
 }
