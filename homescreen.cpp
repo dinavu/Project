@@ -17,6 +17,8 @@
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
 #include <string>
+#include <stdlib.h>
+#include <iostream>
 
 using namespace std;
 
@@ -38,7 +40,7 @@ class Goomba {
 	public:
 		Goomba();
 		void handle_input();
-		void show();
+		int show();
 }; //end GOOMBA CLASS
 
 
@@ -119,12 +121,22 @@ bool init()
     return true;
 }
 
+bool init2()
+{
+	if( SDL_Init( SDL_INIT_EVERYTHING ) == -1 ) {return false;}
+	screen = SDL_SetVideoMode(640,224,SCREEN_BPP,SDL_SWSURFACE | SDL_RESIZABLE);
+	if( screen == NULL ) {return false;}
+	SDL_WM_SetCaption( "GAME WORLD", NULL);
+	return true;
+
+}
+
 bool load_files()
 {
     //Load the background image
     background = load_image( "super-mario-bros-screen.jpg" );
     goomba = load_image( "goomba" );
-    playWorld = load_image( "overworld_bg.png" );
+    playWorld = load_image( "level1-1.png" );
 
     //If there was a problem in loading the background
     if( background == NULL )
@@ -175,13 +187,19 @@ void Goomba::handle_input() {
 	} //end IF
 } //end
 
-void Goomba::show() {
+int Goomba::show() {
 	if (play==0) {
 		apply_surface(0,0,background,screen);
 		apply_surface(x,y,goomba,screen);
+		return 0;
 	} else if (play==1) {
-		apply_surface(0,0,playWorld,screen);
+//		clean_up();
+//		init2();
+//		load_files();
+//		apply_surface(0,0,playWorld,screen);
+		return 1;
 	}
+	return 0;
 } //end
 
 
@@ -189,6 +207,7 @@ int main( int argc, char* args[] )
 {
     //Quit flag
     bool quit = false;
+	int enterPlay=0;
 
 	Goomba myGoomba;
 
@@ -218,15 +237,33 @@ int main( int argc, char* args[] )
 		} //end INNER WHILE
 		
 		//Apply the background
-//			apply_surface( 0, 0, background, screen );
-			myGoomba.show();
+//		apply_surface( 0, 0, background, screen );
+		enterPlay=myGoomba.show();
 
 		//Update the screen
 		if( SDL_Flip( screen ) == -1 ) {
 			return 1;
 		}
+		
+		if (enterPlay == 1) { quit = true; }
 	}
+	clean_up();
 	
+	quit = false;
+
+	init2();
+	load_files();
+
+	while (quit == false) {
+		while ( SDL_PollEvent( &event ) ) {
+			if (event.type == SDL_QUIT) { quit = true; }
+		}
+
+		apply_surface(0,0,playWorld,screen);
+
+		if( SDL_Flip(screen) == -1) { return 1; }
+	}
+
 	clean_up();
 	return 0;
 }
