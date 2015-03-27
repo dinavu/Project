@@ -6,6 +6,7 @@ using namespace std;
 
 // mario class constructor
 Mario::Mario() {
+
 	// initialize variables
 	x=0;
 	y=168;
@@ -15,12 +16,12 @@ Mario::Mario() {
 	yVel=0;
 	marioWidth=16;
 	marioHeight=32;
+
 	//camera dimensions
 	camera.x=0;
 	camera.y=0;
 	camera.w=640;
 	camera.h=224;
-	mario=load_image("images/bigMarioMotion.png");
 }
 
 // adjust mario's velocity based on key pressed
@@ -30,7 +31,7 @@ void Mario::handle_input(SDL_Event event) {
         	// adjust the velocity
         	switch( event.key.keysym.sym ) {
         		case SDLK_LEFT: xVel -= getWidth() / 4; break;	// move left
-        		case SDLK_RIGHT: xVel += getWidth() / 4; break;// move right
+        		case SDLK_RIGHT: xVel += getWidth() / 4; break;	// move right
 			case SDLK_DOWN: xVel = 0; break;		// crouch
         	}
 	}
@@ -39,7 +40,7 @@ void Mario::handle_input(SDL_Event event) {
         	// adjust the velocity
         	switch( event.key.keysym.sym ) {
             		case SDLK_LEFT: xVel += getWidth() / 4; break;	// move left
-           		case SDLK_RIGHT: xVel -= getWidth() / 4; break;// move right
+           		case SDLK_RIGHT: xVel -= getWidth() / 4; break;	// move right
 	   		case SDLK_DOWN: xVel = 0; break;		// crouch
         	}
 	}
@@ -60,17 +61,10 @@ void Mario::move() {
 	if( ( y < 0 ) || ( getY() + getHeight() > getLevelH() ) ) {
 		y -= yVel;	// move back
 	}
-
-	cout << "MARIO MOVE" << endl;
-	cout << "xVel: " << xVel << endl;
-	cout << "yVel: " << yVel << endl;
-	cout << "x: " << x << endl;
-	cout << "y: " << y << endl;
-
 }
 
 // display mario's update position
-void Mario::updatePos() {
+void Mario::updateStatus() {
 	if (xVel<0) {			// choose proper leftward movement frame
 		status=1;
 		frame++;
@@ -80,7 +74,6 @@ void Mario::updatePos() {
 		frame++;
 	}
 	else if (event.key.keysym.sym==SDLK_DOWN) {	// display crouching mario
-		//apply_surface(x-camera.x, screenHeight-marioHeight-24, mario, screen, &clipsStill[1]);
 		status=2;
 	}
 	else {
@@ -90,20 +83,6 @@ void Mario::updatePos() {
 	if(frame>=4) {		// reset frame count
 		frame=0;
 	}
-/*
-	// display leftward or rightward movement if necessary
-	if (event.key.keysym.sym!=SDLK_DOWN) {
-		if(status==0) {
-			apply_surface(x-camera.x, screenHeight-marioHeight-24, mario, screen, &clipsRight[frame]);
-			cout << "Mario moved right" << endl;
-		}
-		else if (status==1) {
-			apply_surface(x-camera.x, screenHeight-marioHeight-24, mario, screen, &clipsLeft[frame]);
-			cout << "Mario moved left" << endl;
-		}
-	}
-*/
-
 }
 
 // update camera position relative to mario
@@ -126,8 +105,6 @@ void Mario::set_camera() {
 	if (camera.y>levelHeight-camera.h) {
         	camera.y=getLevelH()-camera.h;
 	}
-
-	cout << "x camera: " << camera.x << endl;
 }
 
 // returns mario's x coordinate
@@ -170,18 +147,22 @@ SDL_Event *Mario::getEvent() {
 	return &event;
 }
 
+// get right motion clip
 SDL_Rect *Mario::getRclip() {
 	return &clipsRight[getFrame()];
 }
 
+// get left motion clip
 SDL_Rect *Mario::getLclip() {
 	return &clipsLeft[getFrame()];
 }
 
+// get camera's x coordinate
 int Mario::getCamerax() {
 	return camera.x;
 }
 
+// get camera's y coordinate
 int Mario::getCameray() {
 	return camera.y;
 }

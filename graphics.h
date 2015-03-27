@@ -14,7 +14,7 @@ public:
 	Graphics();				// class constructor
 	SDL_Surface *load_image(string);	// loads an image
 	void apply_surface(int, int, SDL_Surface*, SDL_Surface*, SDL_Rect* clip); // apply optimized image to destination
-	SDL_Rect clearScreen(SDL_Surface*);		// reset the screen to black
+	SDL_Rect clearScreen(SDL_Surface*);	// reset the screen to black
 	bool init();				// initializes all SDL subsystems
 	bool load_files();			// loads all the necessary files for the game
 	void set_clips();			// sets all the image clips
@@ -25,6 +25,10 @@ public:
 	int getLevelW();			// returns the level width
 	SDL_Surface *getScreen();		// returns the screen
 	SDL_Rect *getCamera();			// returns the camera view
+	void handleHome(SDL_Event event);	// determine to start the game or not
+	bool initHome();			// intialize all SDL subsystems for the homescreen
+	int showHome();				// updates the homescreen
+	int runHomescreen(SDL_Event event);	// runs the homescreen
 
 protected:
 	int screenWidth;			// width of the screen
@@ -32,8 +36,12 @@ protected:
 	int screenBPP;				// bits per pixel
 	int levelWidth;				// width of the level
 	int levelHeight;			// height of the level
+	int iconX, iconY;			// goomba icon start screen's x and y coordinates
+	int play;				// determine whether to start the game
 	SDL_Surface* screen;			// display window
 	SDL_Surface* background;		// background of the display window
+	SDL_Surface* goombaIcon;		// icon of goomba for start screen selection
+	SDL_Surface* startScreen;		// background of start screen
 	SDL_Surface* mario;			// mario background
 	SDL_Rect clipsRight[4];			// images for mario moving right
 	SDL_Rect clipsLeft[4];			// images for mario moving left
