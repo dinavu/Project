@@ -81,10 +81,11 @@ bool Graphics::init() {
 
 // load the files for the program
 bool Graphics::load_files() {
-	background=load_image("images/level1-1.png");	// loads the level background
-	mario=load_image("images/bigMarioMotion.png");	// loads all the mario images
+	background = load_image("images/level1-1.png");	// loads the level background
+	mario = load_image("images/bigMarioMotion.png");// loads all the mario images
 	startScreen = load_image( "images/super-mario-bros-screen.jpg" );
 	goombaIcon = load_image( "images/goomba" );
+	fireball = load_image( "images/fireball_sprites.png" );
 
 	// if there was a problem in loading the dot
 	if(mario==NULL) {
@@ -96,19 +97,28 @@ bool Graphics::load_files() {
         	return false;
 	}
 
-	if( background == NULL ) {
+	// if problem loading start screen
+	if( startScreen == NULL ) {
         	return false;
 	}
 
+	// if problem loading goombaIcon
 	if( goombaIcon == NULL ) {
+		return false;
+	}
+
+	// if problem loading fireball
+	if ( fireball == NULL) {
 		return false;
 	}
 
 	return true; 	// everything loaded fine
 }
-
+ /*
 // sets all the image clips
 void Graphics::set_clips() {
+
+	// mario sprite clips
 	clipsRight[0].x=0;
 	clipsRight[0].y=0;
 	clipsRight[0].w=16;
@@ -154,11 +164,13 @@ void Graphics::set_clips() {
 	clipsStill[1].w=16;
 	clipsStill[1].h=32;
 }
+*/
 
 // frees the surfaces
 void Graphics::clean_up() {
 	SDL_FreeSurface(mario);
 	SDL_FreeSurface(background);
+	SDL_FreeSurface(fireball);
 
 	SDL_Quit();	// quit SDL
 }

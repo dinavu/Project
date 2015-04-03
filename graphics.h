@@ -43,9 +43,13 @@ protected:
 	SDL_Surface* goombaIcon;		// icon of goomba for start screen selection
 	SDL_Surface* startScreen;		// background of start screen
 	SDL_Surface* mario;			// mario background
+	SDL_Surface* fireball;			// mario's fireball
 	SDL_Rect clipsRight[4];			// images for mario moving right
 	SDL_Rect clipsLeft[4];			// images for mario moving left
 	SDL_Rect clipsStill[1];			// image for mario crouching
+	SDL_Rect clipsJump[1];			// image for mario jumping
+	SDL_Rect clipsfireR[4];			// images for fireball moving right
+	SDL_Rect clipsfireL[4];			// images for fireball moving left
 	SDL_Event event;
 };
 
