@@ -16,11 +16,7 @@ const int SCREEN_HEIGHT = 224;
 const int SCREEN_BPP = 32;
 
 //The frame rate
-const int FRAMES_PER_SECOND = 20;
-
-// direction of Goomba
-const int ENEMY_LEFT=1;
-const int ENEMY_RIGHT=1;
+const int FRAMES_PER_SECOND = 10;
 
 //The dimensions of the level
 const int LEVEL_WIDTH = 3350;
@@ -40,20 +36,24 @@ SDL_Event event;
 //The camera
 SDL_Rect camera = { 0, 0, SCREEN_WIDTH, SCREEN_HEIGHT };
 
+//Vector of obstructions
+vector<SDL_Rect> obs;
+
 class Enemy
 {
 	public:
 	Enemy(); //Initializes the variables
 	void virtual move(); //Moves Goomba left
 	void virtual show(); //Shows goomba
-	void set_camera();
+	void virtual set_camera();
+	void virtual set_clips();
 
 	protected:
-	int x,y;
 	int xVel,yVel; //Its rate of movement
 	int frame; //Its current frame
 	int status; //Its animation status
 	int enemy_height, enemy_width;
+	SDL_Rect box;
 };
 
 class Goomba: public Enemy
@@ -62,23 +62,23 @@ class Goomba: public Enemy
 	Goomba(int, int);
 	void virtual move();
 	void virtual show();
-	void set_clips();
+	void virtual set_clips();
 	private:
 	SDL_Rect clipsLeft[8];
-	int GOOMBA_HEIGHT, GOOMBA_WIDTH;
+	SDL_Rect clipsDeath[4];
 };
 
 class Koopa: public Enemy
 {
 	public:
-	Koopa(int, int);
+	Koopa(int, int, int, int);
 	void virtual move();
 	void virtual show();
-	void set_clips();
+	void virtual set_clips();
 	private:
 	SDL_Rect clipsLeft[4];
 	SDL_Rect clipsRight[4];
-	int KOOPA_HEIGHT, KOOPA_WIDTH;
+	int xmin,xmax;
 };	
 
 class Plant: public Enemy
@@ -87,10 +87,9 @@ class Plant: public Enemy
 	Plant(int, int);
 	void virtual move();
 	void virtual show();
-	void set_clips();
+	void virtual set_clips();
 	private:
 	SDL_Rect clips[4];
-	int PLANT_HEIGHT, PLANT_WIDTH;
 };
 
 // timer class for regulating frame rate
@@ -131,8 +130,8 @@ int main( int argc, char* args[] )
 	//Create Goomba class
 	Goomba Goomba1(500, 168);
 	Goomba Goomba2(550, 168);
-	Koopa Koopa1(350, 100);
-	Plant Plant1(455, 142);
+	Koopa Koopa1(350, 100, 300, 375);
+	Plant Plant1(451, 142);
 
 	//assign vector of enemies
 	myenemies[0] = &Goomba1;
@@ -141,10 +140,10 @@ int main( int argc, char* args[] )
 	myenemies[3] = &Plant1;
 
 	// sets the necessary images
-	Goomba1.set_clips(); 
-	Goomba2.set_clips(); 
-	Koopa1.set_clips();
-	Plant1.set_clips();
+	for (int i=0; i<e_num; i++ )
+	{		
+		myenemies[i]->set_clips();
+	}
 
 	// frame rate regulator
 	Timer fps; 
@@ -206,15 +205,16 @@ int main( int argc, char* args[] )
 
 Goomba::Goomba(int startx, int starty)
 {
-	//Initialize movement variables
-	x = startx;
-	y = starty;
+	//Initialize movement variables	
+	box.x = startx;
+	box.y = starty;
 	xVel = -1;
 	yVel = 0;
-	GOOMBA_HEIGHT = 25.5;
-	GOOMBA_WIDTH = 25;
-	enemy_height = GOOMBA_HEIGHT;
-	enemy_width = GOOMBA_WIDTH;
+	enemy_height = 25.5;
+	enemy_width = 25;
+	//set box dimensions
+	box.w = enemy_width;
+	box.h = enemy_height;
 }
 
 void Goomba::move()
@@ -229,33 +229,37 @@ void Goomba::show()
 	if(frame>=8) { // reset frame count
 		frame=0;
 	}
-	apply_surface(x, SCREEN_HEIGHT-enemy_height-BLOCK_HEIGHT, goomba, screen, &clipsLeft[frame]);
+	apply_surface(box.x, SCREEN_HEIGHT-enemy_height-BLOCK_HEIGHT, goomba, screen, &clipsLeft[frame]);
 }
 
-Koopa::Koopa(int startx, int starty)
+Koopa::Koopa(int startx, int starty, int startmin, int startmax)
 {
 	//Initialize movement variables
-	x = startx;
-	y = starty;
+	box.x = startx;
+	box.y = starty;
 	xVel = 1;
 	yVel = 0;
-	KOOPA_WIDTH=39;
-	KOOPA_HEIGHT=37.5;
-	enemy_height = KOOPA_HEIGHT;
-	enemy_width = KOOPA_WIDTH;
+	enemy_height = 37.5;
+	enemy_width = 39;
+	//kstatus = 1; //start left
+	xmin = startmin;
+	xmax = startmax;
+
+	box.w = enemy_width;
+	box.h = enemy_height;
 }
 
 void Koopa::move()
 {
-	if (x<=300)
+	if (box.x<=xmin)
 	{
-		status = ENEMY_RIGHT;
+		status = 0; //go right
 		frame = 0;
 		xVel = 1;
 	}
-	if (x>375)
+	if (box.x>xmax)
 	{	
-		status = ENEMY_LEFT;
+		status = 1; //go left
 		frame = 0;
 		xVel = -1;
 	}
@@ -265,30 +269,30 @@ void Koopa::move()
 void Koopa::show()
 {
 	Enemy::show();
-	
+
 	if(frame>=4) { // reset frame count
 		frame=0;
 	}
 	// display leftward or rightward movement if necessary
-	if(status==ENEMY_RIGHT) {
-		apply_surface(x,y+50, koopa, screen, &clipsRight[frame]);
+	if(status==0) {
+		apply_surface(box.x,box.y, koopa, screen, &clipsRight[frame]);
 	}
-	if (status==ENEMY_LEFT) {
-		apply_surface(x,y, koopa, screen, &clipsLeft[frame]);
+	if (status==1) {
+		apply_surface(box.x,box.y, koopa, screen, &clipsLeft[frame]);
 	}
 }
 
 Plant::Plant(int startx, int starty)
 {
 	//Initialize movement variables
-	x = startx;
-	y = starty;
+	box.x = startx;
+	box.y = starty;
 	xVel = 0;
 	yVel = 0;
-	PLANT_WIDTH= 25.1;
-	PLANT_HEIGHT= 26.5;
-	enemy_height = PLANT_HEIGHT;
-	enemy_width = PLANT_WIDTH;
+	enemy_height = 26.5;
+	enemy_width = 25.1;
+	box.w = enemy_width;
+	box.h = enemy_height;
 }
 
 void Plant::move()
@@ -300,54 +304,56 @@ void Plant::show()
 {
 	Enemy::show();
 
-	//if(frame>=2) { // reset frame count
+	if(frame>=2) { // reset frame count
 		frame=0;
-	//}
+	}
 
-	apply_surface(x,y, plant, screen, &clips[frame]);
+	apply_surface(box.x,box.y, plant, screen, &clips[frame]);
 }
 
 Enemy::Enemy()
 {
 	//Initialize animation variables
 	frame = 0;
-	status = ENEMY_LEFT;
+	status = 1; //staryt left
 }
 
 void Enemy::move()
 {
     	//Move left or right
-   	 x += xVel;
+   	 box.x += xVel;
 
     	//Keep enemy in bounds
-    	if( ( x < 0 ) || ( x + enemy_width > SCREEN_WIDTH ) )
+    	if( ( box.x < 0 ) || ( box.x + enemy_width > SCREEN_WIDTH ) )
     	{
-    	    x -= xVel;
+    		box.x -= xVel;
     	}
 
 	//move up or down
-	y += yVel;
+	box.y += yVel;
 
 	//Keep enemy in bounds
-	if( (y < 0) || ( y + enemy_height > LEVEL_HEIGHT ) ) {
-		y -= yVel;
+	if( (box.y < 0) || ( box.y + enemy_height > LEVEL_HEIGHT ) ) {
+		box.y -= yVel;
 	}
 }
 
 void Enemy::show()
 {
 	if (xVel<0) { // choose proper leftward movement frame
-		status = ENEMY_LEFT;
+		status = 1; //move left
 		frame++;
 	}
 	else if (xVel>0) { // choose proper rightward movement frame
-		status=ENEMY_RIGHT;
+		status = 0; //move right
 		frame++;
 	}
 	else {
 		frame++;
 	}
 }
+
+void Enemy::set_clips(){}
 
 void Enemy::set_camera()
 {
@@ -376,68 +382,68 @@ void Enemy::set_camera()
 void Plant::set_clips()
 {
 	clips[0].x = 0;
-	clips[0].y = PLANT_HEIGHT * 2;
-	clips[0].w = PLANT_WIDTH;
-	clips[0].h = PLANT_HEIGHT;
+	clips[0].y = enemy_height * 2;
+	clips[0].w = enemy_width;
+	clips[0].h = enemy_height;
 
-	clips[1].x = PLANT_WIDTH;
-	clips[1].y = PLANT_HEIGHT * 2;
-	clips[1].w = PLANT_WIDTH;
-	clips[1].h = PLANT_HEIGHT;
+	clips[1].x = enemy_width;
+	clips[1].y = enemy_height * 2;
+	clips[1].w = enemy_width;
+	clips[1].h = enemy_height;
 
-	clips[2].x = PLANT_WIDTH * 2;
-	clips[2].y = PLANT_HEIGHT * 2;
-	clips[2].w = PLANT_WIDTH;
-	clips[2].h = PLANT_HEIGHT;
+	clips[2].x = enemy_width * 2;
+	clips[2].y = enemy_height * 2;
+	clips[2].w = enemy_width;
+	clips[2].h = enemy_height;
 
-	clips[3].x = PLANT_WIDTH * 3;
-	clips[3].y = PLANT_HEIGHT * 2;
-	clips[3].w = PLANT_WIDTH;
-	clips[3].h = PLANT_HEIGHT;
+	clips[3].x = enemy_width * 3;
+	clips[3].y = enemy_height * 2;
+	clips[3].w = enemy_width;
+	clips[3].h = enemy_height;
 }
 
 void Koopa::set_clips()
 {
     	//Clip the sprites
-    	clipsRight[ 0 ].x = KOOPA_WIDTH * 5;
-    	clipsRight[ 0 ].y = KOOPA_HEIGHT * 2;
-    	clipsRight[ 0 ].w = KOOPA_WIDTH;
-    	clipsRight[ 0 ].h = KOOPA_HEIGHT;
+    	clipsRight[ 0 ].x = enemy_width * 5;
+    	clipsRight[ 0 ].y = enemy_height * 2;
+    	clipsRight[ 0 ].w = enemy_width;
+    	clipsRight[ 0 ].h = enemy_height;
 
-    	clipsRight[ 1 ].x = KOOPA_WIDTH * 6;
-    	clipsRight[ 1 ].y = KOOPA_HEIGHT * 2;
-    	clipsRight[ 1 ].w = KOOPA_WIDTH;
-    	clipsRight[ 1 ].h = KOOPA_HEIGHT;
+    	clipsRight[ 1 ].x = enemy_width * 6;
+    	clipsRight[ 1 ].y = enemy_height * 2;
+    	clipsRight[ 1 ].w = enemy_width;
+    	clipsRight[ 1 ].h = enemy_height;
 
-   	clipsRight[ 2 ].x = KOOPA_WIDTH * 7;
-   	clipsRight[ 2 ].y = KOOPA_HEIGHT * 2;
-   	clipsRight[ 2 ].w = KOOPA_WIDTH;
-    	clipsRight[ 2 ].h = KOOPA_HEIGHT;
+   	clipsRight[ 2 ].x = enemy_width * 7;
+   	clipsRight[ 2 ].y = enemy_height * 2;
+   	clipsRight[ 2 ].w = enemy_width;
+    	clipsRight[ 2 ].h = enemy_height;
 
-   	clipsRight[ 3 ].x = KOOPA_WIDTH * 8;
-   	clipsRight[ 3 ].y = KOOPA_HEIGHT * 2;
-   	clipsRight[ 3 ].w = KOOPA_WIDTH;
-   	clipsRight[ 3 ].h = KOOPA_HEIGHT;
+   	clipsRight[ 3 ].x = enemy_width * 8;
+   	clipsRight[ 3 ].y = enemy_height * 2;
+   	clipsRight[ 3 ].w = enemy_width;
+   	clipsRight[ 3 ].h = enemy_height;
 
-   	clipsLeft[ 0 ].x = KOOPA_WIDTH * 4;
-    	clipsLeft[ 0 ].y = KOOPA_HEIGHT * 2;
-   	clipsLeft[ 0 ].w = KOOPA_WIDTH;
-    	clipsLeft[ 0 ].h = KOOPA_HEIGHT;
+   	clipsLeft[ 0 ].x = enemy_width * 4;
+    	clipsLeft[ 0 ].y = enemy_height * 2;
+   	clipsLeft[ 0 ].w = enemy_width;
+    	clipsLeft[ 0 ].h = enemy_height;
 
-    	clipsLeft[ 1 ].x = KOOPA_WIDTH * 3;
-    	clipsLeft[ 1 ].y = KOOPA_HEIGHT * 2;
-   	clipsLeft[ 1 ].w = KOOPA_WIDTH;
-    	clipsLeft[ 1 ].h = KOOPA_HEIGHT;
+    	clipsLeft[ 1 ].x = enemy_width * 3;
+    	clipsLeft[ 1 ].y = enemy_height * 2;
+   	clipsLeft[ 1 ].w = enemy_width;
+    	clipsLeft[ 1 ].h = enemy_height;
 	
-	clipsLeft[ 2 ].x = KOOPA_WIDTH * 2;
-    	clipsLeft[ 2 ].y = KOOPA_HEIGHT * 2;
-   	clipsLeft[ 2 ].w = KOOPA_WIDTH;
-    	clipsLeft[ 2 ].h = KOOPA_HEIGHT;
+	clipsLeft[ 2 ].x = enemy_width * 2;
+    	clipsLeft[ 2 ].y = enemy_height * 2;
+   	clipsLeft[ 2 ].w = enemy_width;
+    	clipsLeft[ 2 ].h = enemy_height;
 
-	clipsLeft[ 3 ].x = KOOPA_WIDTH;
-    	clipsLeft[ 3 ].y = KOOPA_HEIGHT * 2;
-   	clipsLeft[ 3 ].w = KOOPA_WIDTH;
-    	clipsLeft[ 3 ].h = KOOPA_HEIGHT;
+	clipsLeft[ 3 ].x = enemy_width;
+    	clipsLeft[ 3 ].y = enemy_height * 2;
+   	clipsLeft[ 3 ].w = enemy_width;
+    	clipsLeft[ 3 ].h = enemy_height;
 
 }
 
@@ -445,44 +451,64 @@ void Goomba::set_clips()
 {
     	//Clip the sprites
     	clipsLeft[ 0 ].x = 0;
-    	clipsLeft[ 0 ].y = GOOMBA_HEIGHT;
-    	clipsLeft[ 0 ].w = GOOMBA_WIDTH;
-    	clipsLeft[ 0 ].h = GOOMBA_HEIGHT;
+    	clipsLeft[ 0 ].y = enemy_height;
+    	clipsLeft[ 0 ].w = enemy_width;
+    	clipsLeft[ 0 ].h = enemy_height;
 
-    	clipsLeft[ 1 ].x = GOOMBA_WIDTH;
-    	clipsLeft[ 1 ].y = GOOMBA_HEIGHT;
-    	clipsLeft[ 1 ].w = GOOMBA_WIDTH;
-    	clipsLeft[ 1 ].h = GOOMBA_HEIGHT;
+    	clipsLeft[ 1 ].x = enemy_width;
+    	clipsLeft[ 1 ].y = enemy_height;
+    	clipsLeft[ 1 ].w = enemy_width;
+    	clipsLeft[ 1 ].h = enemy_height;
 
-   	clipsLeft[ 2 ].x = GOOMBA_WIDTH * 2;
-   	clipsLeft[ 2 ].y = GOOMBA_HEIGHT;
-   	clipsLeft[ 2 ].w = GOOMBA_WIDTH;
-    	clipsLeft[ 2 ].h = GOOMBA_HEIGHT;
+   	clipsLeft[ 2 ].x = enemy_width * 2;
+   	clipsLeft[ 2 ].y = enemy_height;
+   	clipsLeft[ 2 ].w = enemy_width;
+    	clipsLeft[ 2 ].h = enemy_height;
 
-   	clipsLeft[ 3 ].x = GOOMBA_WIDTH * 3;
-   	clipsLeft[ 3 ].y = GOOMBA_HEIGHT;
-   	clipsLeft[ 3 ].w = GOOMBA_WIDTH;
-   	clipsLeft[ 3 ].h = GOOMBA_HEIGHT;
+   	clipsLeft[ 3 ].x = enemy_width * 3;
+   	clipsLeft[ 3 ].y = enemy_height;
+   	clipsLeft[ 3 ].w = enemy_width;
+   	clipsLeft[ 3 ].h = enemy_height;
 
-   	clipsLeft[ 4 ].x = GOOMBA_WIDTH * 4;
-   	clipsLeft[ 4 ].y = GOOMBA_HEIGHT;
-    	clipsLeft[ 4 ].w = GOOMBA_WIDTH;
-    	clipsLeft[ 4 ].h = GOOMBA_HEIGHT;
+   	clipsLeft[ 4 ].x = enemy_width * 4;
+   	clipsLeft[ 4 ].y = enemy_height;
+    	clipsLeft[ 4 ].w = enemy_width;
+    	clipsLeft[ 4 ].h = enemy_height;
 
-   	clipsLeft[ 5 ].x = GOOMBA_WIDTH * 5;
-   	clipsLeft[ 5 ].y = GOOMBA_HEIGHT;
-   	clipsLeft[ 5 ].w = GOOMBA_WIDTH;
-   	clipsLeft[ 5 ].h = GOOMBA_HEIGHT;
+   	clipsLeft[ 5 ].x = enemy_width * 5;
+   	clipsLeft[ 5 ].y = enemy_height;
+   	clipsLeft[ 5 ].w = enemy_width;
+   	clipsLeft[ 5 ].h = enemy_height;
 
-   	clipsLeft[ 6 ].x = GOOMBA_WIDTH * 6;
-    	clipsLeft[ 6 ].y = GOOMBA_HEIGHT;
-   	clipsLeft[ 6 ].w = GOOMBA_WIDTH;
-    	clipsLeft[ 6 ].h = GOOMBA_HEIGHT;
+   	clipsLeft[ 6 ].x = enemy_width * 6;
+    	clipsLeft[ 6 ].y = enemy_height;
+   	clipsLeft[ 6 ].w = enemy_width;
+    	clipsLeft[ 6 ].h = enemy_height;
 
-    	clipsLeft[ 7 ].x = GOOMBA_WIDTH * 7;
-    	clipsLeft[ 7 ].y = GOOMBA_HEIGHT;
-    	clipsLeft[ 7 ].w = GOOMBA_WIDTH;
-    	clipsLeft[ 7 ].h = GOOMBA_HEIGHT;
+    	clipsLeft[ 7 ].x = enemy_width * 7;
+    	clipsLeft[ 7 ].y = enemy_height;
+    	clipsLeft[ 7 ].w = enemy_width;
+    	clipsLeft[ 7 ].h = enemy_height;
+
+	clipsDeath[0].x = 0;
+	clipsDeath[0].y = 0;
+	clipsDeath[0].w = enemy_width;
+	clipsDeath[0].h = enemy_height;
+
+	clipsDeath[1].x = enemy_width;
+	clipsDeath[1].y = 0;
+	clipsDeath[1].w = enemy_width;
+	clipsDeath[1].h = enemy_height;
+
+	clipsDeath[2].x = enemy_width * 2;
+	clipsDeath[2].y = 0;
+	clipsDeath[2].w = enemy_width;
+	clipsDeath[2].h = enemy_height;
+
+	clipsDeath[2].x = enemy_width * 3;
+	clipsDeath[2].y = 0;
+	clipsDeath[2].w = enemy_width;
+	clipsDeath[2].h = enemy_height;
 }
 
 Timer::Timer()
@@ -596,8 +622,9 @@ SDL_Surface *load_image( std::string filename )
         	//If the surface was optimized
         	if( optimizedImage != NULL )
         	{
+
             		//Color key surface
-            		SDL_SetColorKey( optimizedImage, SDL_SRCCOLORKEY, SDL_MapRGB( optimizedImage->format, 0, 0xFF, 0xFF ) );
+            		SDL_SetColorKey( optimizedImage, SDL_SRCCOLORKEY, SDL_MapRGB( optimizedImage->format, 0, 0xFF, 0xFF ));
         	}
     	}
 

@@ -10,7 +10,6 @@
 #include "enemy.h"
 #include "goomba.h"
 #include "koopa.h"
-#include "plant.h"
 #include <iostream>
 #include <string>
 #include <vector>

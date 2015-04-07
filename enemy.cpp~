@@ -31,7 +31,7 @@ void Enemy::move()
 	}
 }
 
-void Enemy::update()
+void Enemy::show()
 {
 	if (xVel<0) { // choose proper leftward movement frame
 		status = 1; //move left

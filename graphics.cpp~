@@ -88,7 +88,6 @@ bool Graphics::load_files() {
 	fireball = load_image( "images/fireball_sprites.png" );
 	goomba = load_image("goomba.png");
 	koopa = load_image("koopa2.png");
-	plant = load_image("plant.png");
 
 	// if there was a problem in loading the dot
 	if(mario==NULL) {
@@ -120,10 +119,6 @@ bool Graphics::load_files() {
 	}
 
 	if(koopa == NULL) {
-		return false;
-	}
-	
-	if(plant == NULL) {
 		return false;
 	}
 
@@ -188,7 +183,6 @@ void Graphics::clean_up() {
 	SDL_FreeSurface(fireball);
 	SDL_FreeSurface(goomba);
 	SDL_FreeSurface(koopa);
-	SDL_FreeSurface(plant);
 
 	SDL_Quit();	// quit SDL
 }
