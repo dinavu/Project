@@ -36,7 +36,7 @@ void Mario::handle_input(SDL_Event event) {
         		case SDLK_LEFT: xVel -= getWidth() / 4; break;	// move left
         		case SDLK_RIGHT: xVel += getWidth() / 4; break;	// move right
 			case SDLK_DOWN: isCrouched = true; break;	// crouch
-			case SDLK_x: isJumped = true; break;		// jump
+			//case SDLK_x: isJumped = true; break;		// jump
         	}
 	}
 	// if a key was released
