@@ -41,31 +41,35 @@ int main( int argc, char* args[] ) {
 	//Number of enemies
 	int e_num = 4;
 
-	// declare variables
+	// declare variablesi
+	int marioDir;			// direction mario faces when initially using fireball
 	bool quit=false;		// quit flag
 	SDL_Event event;
 
 	// images
 	SDL_Surface *background = NULL;
+	SDL_Surface *startScreen = NULL;
+	SDL_Surface *goombaIcon = NULL;
 	SDL_Surface *mario = NULL;
 	SDL_Surface *fireball = NULL;
 	SDL_Surface *goomba = NULL;
 	SDL_Surface *koopa = NULL;
 	SDL_Surface *plant = NULL;
 	background = myGraphics.load_image("images/level1-1.png");
+	startScreen = myGraphics.load_image("images/super-mario-bros-screen.jpg");
+	goombaIcon = myGraphics.load_image("images/goomba");
 	fireball = myGraphics.load_image("images/fireball_sprites.png");
 	mario = myGraphics.load_image("images/bigMarioMotion1.png");
-	goomba = myGraphics.load_image("goomba.png");
-	koopa = myGraphics.load_image("koopa2.png");
-	plant = myGraphics.load_image("plant.png");
+	goomba = myGraphics.load_image("images/goomba.png");
+	koopa = myGraphics.load_image("images/koopa2.png");
+	plant = myGraphics.load_image("images/plant.png");
 		
 	// set image clips
 	myMario.set_clips();		// sets the mario images
 	myFireball.set_clips();		// sets the fireball images
 	
 	//set enemy clips
-	for (int i=0; i<e_num; i++ )
-	{		
+	for (int i=0; i<e_num; i++ ) {		
 		myenemies[i]->set_clips();
 	}
 
@@ -83,9 +87,15 @@ int main( int argc, char* args[] ) {
                 		quit=true;		// quit the program
         		}
 			else if(event.type == SDL_KEYDOWN) {
-				if( event.key.keysym.sym == SDLK_SPACE){
-					myFireball.setFireX(myMario.getX());
+				if(event.key.keysym.sym == SDLK_SPACE){
+					if (myMario.getX()>312) {
+						myFireball.setFireX(myMario.getX()-myMario.getCamerax());
+					}
+					else {
+						myFireball.setFireX(myMario.getX());
+					}
 					myFireball.setFireY(myMario.getY()-myMario.getHeight()/2);
+					marioDir=myMario.getStatus();
 				}
 			}
         	}
@@ -94,12 +104,11 @@ int main( int argc, char* args[] ) {
         	myMario.set_camera();	// set the camera centered on mario
 		
 		//move enemies
-		for (int i=0; i<e_num; i++ )
-		{		
+		for (int i=0; i<e_num; i++ ) {		
 			myenemies[i]->move();
 		}
 		
-		myFireball.moveFire();
+		myFireball.moveFire(marioDir);
 		
 		// reset the screen and display updated scene
 		myGraphics.clearScreen(myGraphics.getScreen());
@@ -107,8 +116,7 @@ int main( int argc, char* args[] ) {
 		myMario.updateStatus();
 		myFireball.updateFire();
 		//update the enemies
-		for (int i=0; i<e_num; i++ )
-		{		
+		for (int i=0; i<e_num; i++ ) {		
 			myenemies[i]->update();
 		}
 
@@ -119,7 +127,7 @@ int main( int argc, char* args[] ) {
 				if ( myFireball.getFireStatus() == 0) {
 					myGraphics.apply_surface(myFireball.getFireX(), myFireball.getFireY() , fireball, myGraphics.getScreen(), myFireball.getFireR());
 				}
-				else if ( myFireball.getFireStatus() ==1) {
+				else if ( myFireball.getFireStatus() == 1) {
 					myGraphics.apply_surface(myFireball.getFireX(), myFireball.getFireY(), fireball, myGraphics.getScreen(), myFireball.getFireL());
 				}
 			}
@@ -132,7 +140,7 @@ int main( int argc, char* args[] ) {
 				if ( myFireball.getFireStatus() == 0) {
 					myGraphics.apply_surface(myFireball.getFireX(), myFireball.getFireY() , fireball, myGraphics.getScreen(), myFireball.getFireR());
 				}
-				else if ( myFireball.getFireStatus() ==1) {
+				else if ( myFireball.getFireStatus() == 1) {
 					myGraphics.apply_surface(myFireball.getFireX(), myFireball.getFireY(), fireball, myGraphics.getScreen(), myFireball.getFireL());
 				}
 			}
@@ -145,7 +153,7 @@ int main( int argc, char* args[] ) {
 				if ( myFireball.getFireStatus() == 0) {
 					myGraphics.apply_surface(myFireball.getFireX(), myFireball.getFireY() , fireball, myGraphics.getScreen(), myFireball.getFireR());
 				}
-				else if ( myFireball.getFireStatus() ==1) {
+				else if ( myFireball.getFireStatus() == 1) {
 					myGraphics.apply_surface(myFireball.getFireX(), myFireball.getFireY(), fireball, myGraphics.getScreen(), myFireball.getFireL());
 				}
 			}
@@ -158,7 +166,7 @@ int main( int argc, char* args[] ) {
 				if ( myFireball.getFireStatus() == 0) {
 					myGraphics.apply_surface(myFireball.getFireX(), myFireball.getFireY() , fireball, myGraphics.getScreen(), myFireball.getFireR());
 				}
-				else if ( myFireball.getFireStatus() ==1) {
+				else if ( myFireball.getFireStatus() == 1) {
 					myGraphics.apply_surface(myFireball.getFireX(), myFireball.getFireY(), fireball, myGraphics.getScreen(), myFireball.getFireL());
 				}
 			}
@@ -173,10 +181,10 @@ int main( int argc, char* args[] ) {
 
 		//Move Koopa left or right
 		if(myenemies[2]->getStatus()==0) { //move right
-			myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(),myenemies[2]->getRclip());
+			myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(), myenemies[2]->getRclip());
 		}
 		if (myenemies[2]->getStatus()==1) { //move left
-			myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(),myenemies[2]->getLclip());
+			myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(), myenemies[2]->getLclip());
 		}
 
 		// update the screen
@@ -192,6 +200,8 @@ int main( int argc, char* args[] ) {
 
 	SDL_FreeSurface(mario);
 	SDL_FreeSurface(background);
+	SDL_FreeSurface(startScreen);
+	SDL_FreeSurface(goombaIcon);
 	SDL_FreeSurface(fireball);
 	SDL_FreeSurface(goomba);
 	SDL_FreeSurface(koopa);
