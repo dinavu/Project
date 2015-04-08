@@ -13,7 +13,7 @@ class Fireball : public Graphics {
 public:
 	Fireball(int, int);		// class constructpr
 	void handleFire(SDL_Event);	// use key presses to adjust fireball's position
-	void moveFire();		// move fireball
+	void moveFire(int);		// move fireball
 	void set_clips();		// sets the image clips for fireball
 	void updateFire();		// display the updated fireball on the screen
 	void setFireX(int);		// sets the x coordinate of fireball

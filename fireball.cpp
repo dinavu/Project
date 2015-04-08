@@ -13,6 +13,7 @@ Fireball::Fireball(int x, int y) {
 	fireYvel=0;
 	fireFrame=0;
 	fireStatus=0;
+	isFire = false;
 }
 
 // sets the clip images for the fireball
@@ -59,8 +60,8 @@ void Fireball::set_clips() {
 	clipsfireL[ 3 ].h = fireH;
 }
 
+// use key presses to adjust fireball's position
 void Fireball::handleFire(SDL_Event event) {
-
 	if( event.type == SDL_KEYDOWN ) {
 		if (event.key.keysym.sym == SDLK_SPACE) { 
 				fireXvel = fireW / 4;
@@ -70,13 +71,18 @@ void Fireball::handleFire(SDL_Event event) {
 	}
 }
 
-void Fireball::moveFire() {
-	fireX += fireXvel/2;
+// move fireball
+void Fireball::moveFire(int marioDirection) {
+	if (marioDirection==1) {
+		fireX -= fireXvel;
+	}
+	else {
+		fireX += fireXvel;
+	}
 	fireY += fireYvel;
 
-	if(( fireX < 0) || (fireX + fireW > screenWidth)) {
-		fireX -= fireXvel;
-		fireYvel = 0;
+	if((fireX < 0) || (fireX + fireW > screenWidth)) {
+		isFire = false;
 	}
 
 	if (fireY > (screenHeight-fireH/2)) {
@@ -87,6 +93,7 @@ void Fireball::moveFire() {
 	}
 }
 
+// display the updated fireball on the screen
 void Fireball::updateFire() {
 	if( fireXvel < 0 ) {
 		fireStatus = 1;
