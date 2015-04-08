@@ -13,4 +13,4 @@ main: $(OBJECTS)
 
 .PHONY: clean
 clean:
-	-rm *.o
+	-rm *.o main
