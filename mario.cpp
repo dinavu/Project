@@ -14,6 +14,9 @@ Mario::Mario() {
 	status=0;
 	xVel=0;
 	yVel=0;
+	yAcc=.1;
+	dt=1.2;
+	initialT=0;
 	marioWidth=16;
 	marioHeight=32;
 	isCrouched=false;
@@ -27,27 +30,68 @@ Mario::Mario() {
 }
 
 // adjust mario's velocity based on key pressed
-void Mario::handle_input(SDL_Event event) {
+void Mario::handle_input(SDL_Event event, int time) {
 
 	// if a key was pressed
 	if( event.type == SDL_KEYDOWN ) {
         	// adjust the velocity
         	switch( event.key.keysym.sym ) {
-        		case SDLK_LEFT: xVel -= getWidth() / 4; break;	// move left
-        		case SDLK_RIGHT: xVel += getWidth() / 4; break;	// move right
-			case SDLK_DOWN: isCrouched = true; break;	// crouch
-			//case SDLK_x: isJumped = true; break;		// jump
+        		case SDLK_LEFT:		// move left
+				if (isJumped==false) {
+					xVel -= getWidth() / 5;
+				}
+				break;
+        		case SDLK_RIGHT:	// move right
+				if (isJumped==false) {
+					xVel += getWidth() / 5;
+				}
+				break;
+			case SDLK_DOWN:		// crouch
+				isCrouched = true;
+				xVel = 0;
+				if (isJumped==true) {
+					isJumped=false;
+					status=0;
+				}
+				break;
+			case SDLK_x:		// jump
+				if (isJumped==false) {
+					initialT = time;
+					jumpDir = getStatus();
+					isJumped = true;
+				}
+				if (getStatus()==0) {
+					xVel += getWidth() /5;
+				}
+				else if (getStatus()==1) {
+					xVel -= getWidth() /5;
+				}
+				yVel += getHeight() /8;
+				break;
         	}
 	}
+
 	// if a key was released
 	else if( event.type == SDL_KEYUP ) {
         	// adjust the velocity
         	switch( event.key.keysym.sym ) {
-            		case SDLK_LEFT: xVel += getWidth() / 4; break;	// move left
-           		case SDLK_RIGHT: xVel -= getWidth() / 4; break;	// move right
-	   		case SDLK_DOWN: isCrouched = false; break;	// crouch
+            		case SDLK_LEFT:		// move left
+				if (isJumped==false) {
+					xVel += getWidth() / 5;
+				}
+				break;
+           		case SDLK_RIGHT:	// move right
+				if (isJumped==false) {
+					xVel -= getWidth() / 5;
+				}
+				break;
+	   		case SDLK_DOWN:		// crouch
+				isCrouched = false;
+				status = 0;	
+				break;
         	}
 	}
+
 }
 
 // set the clips for mario's motion
@@ -97,7 +141,12 @@ void Mario::set_clips() {
 	clipsStill[1].w=16;
 	clipsStill[1].h=32;
 
-	clipsJump[1].x=16;
+	clipsJump[0].x=16;
+	clipsJump[0].y=32*2;
+	clipsJump[0].w=16;
+	clipsJump[0].h=32;
+
+	clipsJump[1].x=16*2;
 	clipsJump[1].y=32*2;
 	clipsJump[1].w=16;
 	clipsJump[1].h=32;
@@ -105,36 +154,71 @@ void Mario::set_clips() {
 
 // update mario's velocity to move
 void Mario::move() {
-	x += xVel;	// move mario left or right
+	x += xVel;			// move mario left or right
 
 	// if mario went too far to the left or right
 	if((x < 0) || (getX() + getWidth() > getLevelW())) {
-        	x -= xVel;	// move back
+        	x -= xVel;		// move back
 	}
 
-	y += yVel;	// move mario up or down
+	y += getHeight() /8;	// move mario up or down
 
 	// if mario went too far up or down
-	if((y < 0 ) || (getY() + getHeight() > getLevelH())) {
-		y -= yVel;	// move back
+	if((y < 0 ) || (getY() + getHeight() > 224)) {
+		y -= getHeight() /8;;		// move back
 	}
+
+
+	
+}
+
+// make Mario do a full jump
+void Mario::jump(int time) {
+
+	if (isCrouched==true) {
+		isJumped=false;
+	}	
+	else if ((time-initialT)<600) {
+		y -= (yVel*dt)+(yAcc*dt*dt);
+		x += xVel;
+	}
+	else if ((time-initialT)<1200) {
+		y += (yVel*dt)+(yAcc*dt*dt);
+		x += xVel;
+	}
+	else if ((time-initialT)>=1200) {
+		isJumped=false;
+		initialT=0;
+		xVel = 0;
+		yVel = 0;
+		status = 0;
+	}
+	cout << "time-initialT: " << time-initialT << endl;
+
 }
 
 // display mario's update position
 void Mario::updateStatus() {
-	if (xVel<0) {			// choose proper leftward movement frame
+	if (isCrouched==true) {		// display crouching mario
+		status=2;
+	}
+	else if (isJumped==true) {	// display jumping mario
+		status=3;
+		if (jumpDir==0) {
+			frame=0;
+		}
+		else if (jumpDir==1) {
+			frame=1;
+		}
+
+	}
+	else if (xVel<0) {		// choose proper leftward movement frame
 		status=1;
 		frame++;
 	}
 	else if (xVel>0) {		// choose proper rightward movement frame
 		status=0;
 		frame++;
-	}
-	else if (isCrouched==true) {	// display crouching mario
-		status=2;
-	}
-	else if (isJumped==true) {	// display jumping mario
-		status=3;
 	}
 	else {
 		frame=0;
@@ -165,6 +249,11 @@ void Mario::set_camera() {
 	if (camera.y>levelHeight-camera.h) {
         	camera.y=getLevelH()-camera.h;
 	}
+}
+
+// returns isJumped()
+bool Mario::getisJumped(){
+	return isJumped;
 }
 
 // returns mario's x coordinate
@@ -224,7 +313,7 @@ SDL_Rect *Mario::getCclip() {
 
 // get jumping clip
 SDL_Rect *Mario::getJclip() {
-	return &clipsJump[1];
+	return &clipsJump[getFrame()];
 }
 
 // get camera's x coordinate

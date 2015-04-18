@@ -44,6 +44,8 @@ int main( int argc, char* args[] ) {
 	// declare variablesi
 	int marioDir;			// direction mario faces when initially using fireball
 	bool quit=false;		// quit flag
+	int time;
+	bool isJumped;
 	SDL_Event event;
 
 	// images
@@ -77,14 +79,15 @@ int main( int argc, char* args[] ) {
 	myGraphics.runHomescreen(event);
 
 	// run the game
-	myGraphics.init();				// resize the game window
-	while(quit==false) {				// user has not quit
-     		fps.start();				// start the frame timer
-        	while(SDL_PollEvent(&event)) {		// there are events to handle
-        		myMario.handle_input(event);	// handle events for mario
-			myFireball.handleFire(event);	// handle events for fireball
-        		if(event.type==SDL_QUIT) {	// user has Xed out the window
-                		quit=true;		// quit the program
+	myGraphics.init();					// resize the game window
+	while(quit==false) {					// user has not quit
+     		fps.start();					// start the frame timer
+		time = SDL_GetTicks();				// microseconds that have passed
+       		while(SDL_PollEvent(&event)) {			// there are events to handle
+        		myMario.handle_input(event,time);	// handle events for mario
+			myFireball.handleFire(event);		// handle events for fireball
+        		if(event.type==SDL_QUIT) {		// user has Xed out the window
+                		quit=true;			// quit the program
         		}
 			else if(event.type == SDL_KEYDOWN) {
 				if(event.key.keysym.sym == SDLK_SPACE){
@@ -100,7 +103,23 @@ int main( int argc, char* args[] ) {
 			}
         	}
 
-        	myMario.move();		// move mario
+		// determine how to update mario's position
+		isJumped = myMario.getisJumped(); 
+		if (isJumped == true) {
+			myMario.jump(time);
+		}	
+		else {
+	        	myMario.move();
+		}
+
+		// DEBUGGGGGGGGGG
+		cout << "MARIO STATS" << endl;
+		cout << "isJumped: " << isJumped << endl;
+		cout << "x: " << myMario.getX() << endl;
+		cout << "y: " << myMario.getY() << endl;
+		cout << "status: " << myMario.getStatus() << endl;
+
+	
         	myMario.set_camera();	// set the camera centered on mario
 		
 		//move enemies
