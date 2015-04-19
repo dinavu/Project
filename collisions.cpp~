@@ -92,18 +92,22 @@ int Collisions::checkCollision(int x, int y, int width, int height)
    	if( bottomA <= topB )
    	{
   	    	return 0;
+		cout << "1";
   	}
 
  	if( rightA <= leftB )
   	{
   	     	return 0;
+		cout << "2";
   	}
 
    	if( leftA >= rightB )
    	{
     	   	return 0;
+		cout << "3";
 	
    	}
+	cout << "4";
 
    	//If none of the sides from A are outside B
    	return (1);

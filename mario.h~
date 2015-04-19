@@ -48,7 +48,6 @@ protected:
 	bool isCrouched;			// true/false that mario is crouched
 	bool isJumped;				// true/false that mario is jumping
 	SDL_Rect camera;			// camera object to view specific portion of background
-	int collision;				// true when mario has collided with something
 };
 
 #endif
