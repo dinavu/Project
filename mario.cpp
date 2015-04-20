@@ -332,8 +332,8 @@ int Mario::getCameray() {
 void Mario::setPipes()
 {
 	//First pipe
-	pipes[0].x = 100;
-	pipes[0].y = 190;
+	pipes[0].x = 451;
+	pipes[0].y = 142;
 	pipes[0].w = 20;
 	pipes[0].h = 50;
 }
@@ -368,28 +368,5 @@ void Mario::checkCollision()
 	} else {
 		collision = 0;
 	}
-   	/*if( bottomA <= topB )
-   	{
-  	    	collision = 1;
-		cout << "1";
-  	}
-
- 	if( rightA <= leftB )
-  	{
-  	     	collision = 1;
-		cout << "2";
-  	}
-
-   	if( leftA >= rightB )
-   	{
-    	   	collision = 1;
-		cout << "3";
-	
-   	}
-
-	if (collision != 1){
-   		//If none of the sides from A are outside B
-   		collision = 0;
-	}*/
-	cout << collision;
+ 
 }
