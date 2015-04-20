@@ -174,23 +174,23 @@ void Mario::move() {
 	checkCollisionsHor();
 
 	// if mario went too far to the left or right
-	if((x < 0) || (getX() + getWidth() > getLevelW()) || (collision==1) /*|| (pipecollision==1)*/) {
+	if((x < 0) || (getX() + getWidth() > getLevelW()) /*|| (pipecollision==1)*/) {
         	x -= 2 * xVel;		// move back
 	}
 
 	checkPipeCollision();
-	if (collision==0) {
+/*	if (collision==0) {
 		y += getHeight() /8;	// move mario up or down
 	}
-
+*/
 	checkCollisionsVer();
-
+/*
 	if (collision==0) {
 		y += getHeight() /8;	// move mario up or down
 	}
-
+*/
 	// if mario went too far up or down
-	if((y < 0 ) || (getY() + getHeight() > 224) || (collision==1)) {
+	if((y < 0 ) || (getY() + getHeight() > 224)) {
 		y -= getHeight() /8;		// move back
 	}
 
@@ -597,26 +597,26 @@ bool Mario::check_collision( SDL_Rect A, SDL_Rect B )
     //If any of the sides from A are outside of B
     if( bottomA < topB )
     {
-        return false;
+        return true;
     }
 
     if( topA > bottomB )
     {
-        return false;
+        return true;
     }
 
     if( rightA < leftB )
     {
-        return false;
+        return true;
     }
 
     if( leftA > rightB )
     {
-        return false;
+        return true;
     }
 
     //If none of the sides from A are outside B
-    return true;
+    return false;
 }
 
 
@@ -630,33 +630,38 @@ void Mario::checkCollisionsHor() {
 	//Floor (RIGHT / LEFT)
 	for (int i = 0 ; i < floor.size() ; i++ ) {
 		if(check_collision(marioRect,floor[i]) ) {
-			if ( (marioRect.x < (floor[i].x+floor[i].w)) && (marioRect.y+marioRect.h)!= floor[i].y ) 
-				{ collision=1; }
-			if ( ((marioRect.x+marioRect.w) > floor[i].x)  && (marioRect.y+marioRect.h) != floor[i].y ) 
-				{ collision=1; }
+			if (	(marioRect.x < (floor[i].x+floor[i].w)) && marioRect.x >=floor[i].x && (marioRect.y+marioRect.h)==floor[i].y) 
+				{ cout <<"Case 1" <<endl;
+				 collision=1; }
+			//if ( ((marioRect.x+marioRect.w) > floor[i].x)  && (marioRect.y+marioRect.h) != floor[i].y ) 
+		//		{ cout << "Case 2" <<endl;
+		//			collision=1; }
 		}
 	}
 
 	//Boxes (RIGHT / LEFT)
-	for ( int m=0 ; m<boxes.size() ; m++ ) {
+/*	for ( int m=0 ; m<boxes.size() ; m++ ) {
 		if ( check_collision(marioRect,boxes[m]) ) {
 			if ( (marioRect.x < (boxes[m].x+boxes[m].w)) && (marioRect.y+marioRect.h)!=boxes[m].y ) 
-				{ collision=1; }
+				{ cout << "Case 3" <<endl;
+				collision=1; }
 			if ( ((marioRect.x+marioRect.w) > boxes[m].x)  && (marioRect.y+marioRect.h)!=boxes[m].y ) 
-				{ collision=1; }
+				{ cout << "Case 4" <<endl;
+				 collision=1; }
 		}
 	}
-
+*/
 }
 
 void Mario::checkCollisionsVer() {
 
 	//Floor (UP / DOWN)
 	for ( int z = 0 ; z < floor.size() ; z++ ) {
-		if ((y < 0) || (getY() + getHeight() > getLevelH()) || check_collision(marioRect,floor[z]) ) {
-	   		y -= yVel;	// move back
-			collision = 1;
-			cout << "VERTICAL COLLISION DETECTED!!!!!!!!!!!" << endl;
+		if ((y < 0) || ((getY() + getHeight() )>= getLevelH()) || check_collision(marioRect,floor[z]) ) {
+	   		//y -= yVel;	// move back
+			//y = getLevelH() - 2* getHeight() - 1;
+			//cout << "VERTICAL COLLISION DETECTED!!!!!!!!!!!" << endl;
+			floorcollision = 1;
 		}
 	}
 

@@ -62,6 +62,7 @@ protected:
 	vector <SDL_Rect> boxes;
 	SDL_Rect marioRect;
 	int up,down,left,right;
+	int floorcollision;
 };
 
 #endif
