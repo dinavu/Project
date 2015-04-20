@@ -11,7 +11,6 @@
 #include "goomba.h"
 #include "koopa.h"
 #include "plant.h"
-#include "collisions.h"
 #include <iostream>
 #include <string>
 #include <vector>
@@ -24,7 +23,6 @@ int main( int argc, char* args[] ) {
 	Mario myMario;						// create mario object
 	Fireball myFireball(myMario.getX(), myMario.getY());	// create fireball object
 	Timer fps;						// frame rate regulator
-	Collisions myCol;					// create collisions
 
 	// instantiate enemies
 	vector < Enemy* > myenemies(4);		//Create a vector of enemies
@@ -32,7 +30,7 @@ int main( int argc, char* args[] ) {
 	Goomba Goomba1(500, 168);	
 	Goomba Goomba2(550, 168);
 	Koopa Koopa1(350, 100, 300, 375);
-	Plant Plant1(451, 142);
+	Plant Plant1(100,190);//451, 142);
 	
 	// assign enemies
 	myenemies[0] = &Goomba1;
@@ -112,10 +110,10 @@ int main( int argc, char* args[] ) {
 		}	
 		else {
 			//Check if mario has collided
-			int mariocollision = 0;
-			mariocollision = myCol.checkCollision(myMario.getX(), myMario.getY(), myMario.getWidth(),myMario.getHeight());
+			//int mariocollision = 0;
+			//mariocollision = myCol.checkCollision(myMario.getX(), myMario.getY(), myMario.getWidth(),myMario.getHeight());
 			//Put into mario class status of marios collision
-			myMario.m_collision(mariocollision);
+			//myMario.m_collision(mariocollision);
 	        	myMario.move();
 		}
 

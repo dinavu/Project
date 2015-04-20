@@ -32,7 +32,8 @@ public:
 	int getCamerax();			// return camera's x coordinate
 	int getCameray();			// return camera's y coordinate
 	bool getisJumped();			// return whether mario is jumping or not
-	void m_collision(int);			// indicates mario has collided with something
+	void setPipes();			// set pipe coordinates
+	void checkCollision();			// function that checks if mario has collided with a pipe
 
 protected:
 	float x, y;				// the X and Y offsets of the dot
@@ -49,6 +50,7 @@ protected:
 	bool isJumped;				// true/false that mario is jumping
 	SDL_Rect camera;			// camera object to view specific portion of background
 	int collision;				// true when mario has collided with something
+	SDL_Rect pipes[2];			// An array of all the pipes coordinates
 };
 
 #endif

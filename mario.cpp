@@ -27,6 +27,8 @@ Mario::Mario() {
 	camera.y=0;
 	camera.w=640;
 	camera.h=224;
+
+	setPipes();
 }
 
 // adjust mario's velocity based on key pressed
@@ -154,11 +156,12 @@ void Mario::set_clips() {
 
 // update mario's velocity to move
 void Mario::move() {
+	checkCollision();
 	x += xVel;			// move mario left or right
 
 	// if mario went too far to the left or right
 	if((x < 0) || (getX() + getWidth() > getLevelW()) || (collision==1)) {
-        	x -= xVel;		// move back
+        	x -= 2 * xVel;		// move back
 	}
 
 	y += getHeight() /8;	// move mario up or down
@@ -168,7 +171,7 @@ void Mario::move() {
 		y -= getHeight() /8;;		// move back
 	}
 
-
+	collision = 0;
 	
 }
 
@@ -326,6 +329,67 @@ int Mario::getCameray() {
 	return camera.y;
 }
 
-void Mario::m_collision(int isCollided){
-	collision = isCollided;
+void Mario::setPipes()
+{
+	//First pipe
+	pipes[0].x = 100;
+	pipes[0].y = 190;
+	pipes[0].w = 20;
+	pipes[0].h = 50;
+}
+
+void Mario::checkCollision()
+{
+
+	//The sides of the rectangles
+    	int leftA, leftB;
+    	int rightA, rightB;
+    	int topA, topB;
+    	int bottomA, bottomB;
+
+	//Set enemy or marios position as the above variables
+	leftA = x;
+	rightA = x + marioWidth;
+	topA = y;
+	bottomA = y + marioHeight;
+
+	leftB = pipes[0].x;
+	rightB = pipes[0].x + pipes[0].w;
+	topB = pipes[0].y;
+	bottomB = pipes[0].y + pipes[0].h;
+	
+    	//If any of the sides from A are outside of B
+	if ((rightA>=leftB)&&(leftA<leftB)){
+		collision = 1;
+	} else if ((leftA<=rightB)&&(leftA>leftB)){
+		collision = 1;
+	} else if ((rightA<=rightB)&&(leftA>=leftB)){
+		collision = 1;
+	} else {
+		collision = 0;
+	}
+   	/*if( bottomA <= topB )
+   	{
+  	    	collision = 1;
+		cout << "1";
+  	}
+
+ 	if( rightA <= leftB )
+  	{
+  	     	collision = 1;
+		cout << "2";
+  	}
+
+   	if( leftA >= rightB )
+   	{
+    	   	collision = 1;
+		cout << "3";
+	
+   	}
+
+	if (collision != 1){
+   		//If none of the sides from A are outside B
+   		collision = 0;
+	}*/
+	cout << collision;
 }
