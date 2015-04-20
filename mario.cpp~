@@ -174,7 +174,7 @@ void Mario::move() {
 	checkCollisionsHor();
 
 	// if mario went too far to the left or right
-	if((x < 0) || (getX() + getWidth() > getLevelW()) || (collision==1) /*|| (pipecollision==1)*/) {
+	if((x < 0) || (getX() + getWidth() > getLevelW()) || (collision==1) || (pipecollision==1)) {
         	x -= 2 * xVel;		// move back
 	}
 
