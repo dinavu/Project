@@ -363,8 +363,6 @@ void Mario::checkCollision()
 		collision = 1;
 	} else if ((leftA<=rightB)&&(leftA>leftB)){
 		collision = 1;
-	} else if ((rightA<=rightB)&&(leftA>=leftB)){
-		collision = 1;
 	} else {
 		collision = 0;
 	}
