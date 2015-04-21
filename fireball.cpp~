@@ -152,10 +152,10 @@ bool Fireball::getIsFire() {
 	return isFire;
 }
 
-int Fireball::getFireW() {
+int Fireball:getFireW() {
 	return fireW;
 }
 
-int Fireball::getFireH() {
+int Fireball:getFireH() {
 	return fireH;
 }

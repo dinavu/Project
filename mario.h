@@ -40,6 +40,7 @@ public:
 	bool check_collision(SDL_Rect, SDL_Rect);
 	void checkCollisionsHor();
 	void checkCollisionsVer();
+	bool isDead();
 
 protected:
 	float x, y;				// the X and Y offsets of the dot
@@ -57,13 +58,14 @@ protected:
 	SDL_Rect camera;			// camera object to view specific portion of background
 	int collision;				// true when mario has collided with something
 	int pipecollision;
-	SDL_Rect pipes[2];			// An array of all the pipes coordinates
+	SDL_Rect pipes[31];			// An array of all the pipes coordinates
 	vector <SDL_Rect> floor;
 	vector <SDL_Rect> boxes;
 	SDL_Rect marioRect;
 	int up,down,left,right;
 	int floorcollision;
 	int boxcollision;
+	bool death;
 };
 
 #endif

@@ -19,6 +19,9 @@ class Goomba: public Enemy
 	int virtual getWidth();		//returns enemies width
 	int virtual getHeight();	//returns enemies height
 	int virtual getStatus(); 	//returns enemies status
+	bool virtual isDead();		//returns death
+	void virtual checkDeath(int,int,int,int,int,int);//checks if the enemy has been killed
+	bool virtual mDead(int,int);	//returns true if mario is dead
 
 	private:
 	SDL_Rect clipsLeft[8];		//Goomba's left moving clips

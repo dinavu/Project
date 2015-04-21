@@ -76,7 +76,7 @@ void Koopa::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int f
 }
 
 bool Koopa::mDead(int mariox,int marioy){
-	Enemy::mDead(mariox,marioy);
+
 }
 
 void Koopa::set_clips()

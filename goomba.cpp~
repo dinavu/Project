@@ -49,7 +49,7 @@ void Goomba::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int 
 }
 
 bool Goomba::mDead(int mariox,int marioy){
-	Enemy::mDead(mariox,marioy);
+
 }
 
 void Goomba::update()

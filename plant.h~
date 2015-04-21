@@ -21,7 +21,6 @@ class Plant: public Enemy
 	int virtual getStatus(); 	//returns enemies status
 	bool virtual isDead();		//returns death
 	void virtual checkDeath(int,int,int,int,int,int);//checks if the enemy has been killed
-	bool virtual mDead(int,int);	//returns true if mario is dead
 
 	private:
 	SDL_Rect clips[4];

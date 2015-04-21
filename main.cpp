@@ -30,7 +30,7 @@ int main( int argc, char* args[] ) {
 	Goomba Goomba1(500, 168);	
 	Goomba Goomba2(550, 168);
 	Koopa Koopa1(350, 100, 300, 375);
-	Plant Plant1(451, 170);//451, 142);
+	Plant Plant1(451, 142);
 	
 	// assign enemies
 	myenemies[0] = &Goomba1;
@@ -109,11 +109,6 @@ int main( int argc, char* args[] ) {
 			myMario.jump(time);
 		}	
 		else {
-			//Check if mario has collided
-			//int mariocollision = 0;
-			//mariocollision = myCol.checkCollision(myMario.getX(), myMario.getY(), myMario.getWidth(),myMario.getHeight());
-			//Put into mario class status of marios collision
-			//myMario.m_collision(mariocollision);
 	        	myMario.move();
 		}
 
@@ -196,19 +191,33 @@ int main( int argc, char* args[] ) {
 			}
 		}
 
+		//check if enemy is hit by fireball
+		for (int i=0; i<e_num; i++ ) {		
+			myenemies[i]->checkDeath(myMario.getY(),myMario.getX(),myFireball.getFireX(),myFireball.getFireY(),myFireball.getFireW(),myFireball.getFireH());
+		}
+
 		//Move goomba left
-		myGraphics.apply_surface(myenemies[0]->getX()-myMario.getCamerax(),myGraphics.getHeight()-myenemies[0]->getHeight()-24, goomba, myGraphics.getScreen(), myenemies[0]->getLclip());
-		myGraphics.apply_surface(myenemies[1]->getX()-myMario.getCamerax(),myGraphics.getHeight()-myenemies[1]->getHeight()-24, goomba, myGraphics.getScreen(), myenemies[1]->getLclip());
+		if (myenemies[0]->isDead() == false){
+			myGraphics.apply_surface(myenemies[0]->getX()-myMario.getCamerax(),myGraphics.getHeight()-myenemies[0]->getHeight()-24, goomba, myGraphics.getScreen(), myenemies[0]->getLclip());
+		}
+			
+		if (myenemies[1]->isDead() == false){
+			myGraphics.apply_surface(myenemies[1]->getX()-myMario.getCamerax(),myGraphics.getHeight()-myenemies[1]->getHeight()-24, goomba, myGraphics.getScreen(), myenemies[1]->getLclip());
+		}
 
 		//Move plant
-		myGraphics.apply_surface(myenemies[3]->getX()-myMario.getCamerax(),myenemies[3]->getY(), plant, myGraphics.getScreen(), myenemies[3]->getLclip());
+		if (myenemies[3]->isDead() == false){
+			myGraphics.apply_surface(myenemies[3]->getX()-myMario.getCamerax(),myenemies[3]->getY(), plant, myGraphics.getScreen(), myenemies[3]->getLclip());
+		}
 
 		//Move Koopa left or right
-		if(myenemies[2]->getStatus()==0) { //move right
-			myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(), myenemies[2]->getRclip());
-		}
-		if (myenemies[2]->getStatus()==1) { //move left
-			myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(), myenemies[2]->getLclip());
+		if (myenemies[2]->isDead() == false){
+			if(myenemies[2]->getStatus()==0) { //move right
+				myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(), myenemies[2]->getRclip());
+			}
+			if (myenemies[2]->getStatus()==1) { //move left
+				myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(), myenemies[2]->getLclip());
+			}
 		}
 
 		// update the screen
@@ -220,6 +229,17 @@ int main( int argc, char* args[] ) {
 		if(fps.get_ticks()<1000/20) {
         		SDL_Delay((1000/20)-fps.get_ticks());
     		}
+
+		//check if quit is true
+		if (myMario.isDead()==true){
+			quit = true;
+		}
+		//check if mario has collided with enemies
+		for (int i=0; i<e_num; i++ ) {
+			if (myenemies[i]->mDead(myMario.getX(),myMario.getY()) == true){
+				quit = true;
+			}
+		}
 	}
 
 	SDL_FreeSurface(mario);

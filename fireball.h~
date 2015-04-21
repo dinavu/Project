@@ -20,8 +20,6 @@ public:
 	void setFireY(int);		// sets the y coordinate of fireball
 	int getFireX();			// returns the x coordinate of fireball
 	int getFireY();			// returns the y coordinate of the fireball
-	int getFireH();			// return the fireballs width
-	int getFireW();			// return the fireballs height
 	int getFireFrame();		// return the frame of the fireball's motion
 	int getFireStatus();		// return the status (direction of the fireball
 	SDL_Rect *getFireR();		// return fireball's right motion clip

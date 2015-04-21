@@ -57,8 +57,6 @@ bool Plant::mDead(int mariox,int marioy){
 
 	if (collision == 1){
 		return true;
-	} else {
-		return false;
 	}
 }
 

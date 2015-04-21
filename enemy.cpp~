@@ -95,6 +95,7 @@ bool Enemy::mDead(int mariox,int marioy){
 	} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
 		collision = 1;
 	}
+	cout << collision << endl;
 
 	if (collision == 1){
 		return true;
