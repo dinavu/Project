@@ -30,7 +30,7 @@ int main( int argc, char* args[] ) {
 	Goomba Goomba1(500, 168);	
 	Goomba Goomba2(550, 168);
 	Koopa Koopa1(350, 100, 300, 375);
-	Plant Plant1(451, 142);
+	Plant Plant1(451, 170);//451, 142);
 	
 	// assign enemies
 	myenemies[0] = &Goomba1;

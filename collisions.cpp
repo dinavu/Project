@@ -63,7 +63,7 @@ void Collisions::setPipes()
 {
 	//First pipe
 	pipes[0].x = 100;
-	pipes[0].y = 190;
+	pipes[0].y = 200;
 	pipes[0].w = 20;
 	pipes[0].h = 50;
 }

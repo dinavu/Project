@@ -14,8 +14,8 @@ Mario::Mario() {
 	status=0;
 	xVel=0;
 	yVel=0;
-	yAcc=.1;
-	dt=1.2;
+	yAcc=.05;
+	dt=0.8;//1.2;
 	initialT=0;
 	marioWidth=16;
 	marioHeight=32;
@@ -28,7 +28,15 @@ Mario::Mario() {
 	camera.w=640;
 	camera.h=224;
 
-	setPipes();
+	setPipes();		// initialize the pipe dimensions for the level
+
+	createFloors();
+	createBoxes();
+	marioRect.x=getX();
+	marioRect.y=getY();
+	marioRect.w=getWidth();
+	marioRect.h=getHeight();
+	collision=0;
 }
 
 // adjust mario's velocity based on key pressed
@@ -39,18 +47,21 @@ void Mario::handle_input(SDL_Event event, int time) {
         	// adjust the velocity
         	switch( event.key.keysym.sym ) {
         		case SDLK_LEFT:		// move left
+				xVel = 0;
 				if (isJumped==false) {
-					xVel -= getWidth() / 5;
+					xVel = -getWidth() /5;
 				}
 				break;
         		case SDLK_RIGHT:	// move right
+				xVel = 0;
 				if (isJumped==false) {
-					xVel += getWidth() / 5;
-				}
+					xVel = getWidth() /5;
+				} 
 				break;
 			case SDLK_DOWN:		// crouch
 				isCrouched = true;
 				xVel = 0;
+				status = 2;
 				if (isJumped==true) {
 					isJumped=false;
 					status=0;
@@ -79,12 +90,12 @@ void Mario::handle_input(SDL_Event event, int time) {
         	switch( event.key.keysym.sym ) {
             		case SDLK_LEFT:		// move left
 				if (isJumped==false) {
-					xVel += getWidth() / 5;
+					xVel = 0;//-getWidth() / 5;
 				}
 				break;
            		case SDLK_RIGHT:	// move right
 				if (isJumped==false) {
-					xVel -= getWidth() / 5;
+					xVel = 0;//getWidth() / 5;
 				}
 				break;
 	   		case SDLK_DOWN:		// crouch
@@ -156,23 +167,43 @@ void Mario::set_clips() {
 
 // update mario's velocity to move
 void Mario::move() {
-	checkCollision();
-	x += xVel;			// move mario left or right
+
+	checkPipeCollision();
+
+	if (collision==0) {
+		x += xVel;			// move mario left or right
+	}
+	
+	//checkCollisionsHor();
 
 	// if mario went too far to the left or right
-	if((x < 0) || (getX() + getWidth() > getLevelW()) || (collision==1)) {
+	if((x < 0) || (getX() + getWidth() > getLevelW()) /*|| (pipecollision==1)*/) {
         	x -= 2 * xVel;		// move back
 	}
 
-	y += getHeight() /8;	// move mario up or down
+	checkPipeCollision();
+	//if (collision==0) {
+	//	y += getHeight() /8;	// move mario up or down
+	//}
+
+	checkCollisionsVer();
+
+	if (collision==0 && floorcollision==0 /*&& boxcollision==0*/) {
+		y += getHeight() /8;	// move mario up or down
+	}
 
 	// if mario went too far up or down
-	if((y < 0 ) || (getY() + getHeight() > 224) || (collision==1)) {
-		y -= getHeight() /8;;		// move back
+	if((y < 0 ) || (getY() + getHeight() > 224)) {
+		y -= getHeight() /8;		// move back
 	}
 
 	collision = 0;
-	
+	floorcollision = 0;
+	boxcollision = 0;
+
+	//Update Mario's Rectangle position
+	marioRect.x=x;
+	marioRect.y=y;
 }
 
 // make Mario do a full jump
@@ -181,22 +212,61 @@ void Mario::jump(int time) {
 	if (isCrouched==true) {
 		isJumped=false;
 	}	
-	else if ((time-initialT)<600) {
-		y -= (yVel*dt)+(yAcc*dt*dt);
-		x += xVel;
+	else if ((time-initialT)<600){
+		checkPipeCollision();
+		if (collision==0) {
+			y -= (yVel*dt)+(yAcc*dt*dt);
+		}
+
+		checkCollisionsVer();
+		if (collision==0) {
+			y -= (yVel*dt)+(yAcc*dt*dt);
+		}
+
+		checkPipeCollision();			
+		if (collision==0) { 
+			//x += xVel;
+		}
+
+		//checkCollisionsHor();
+		if (collision==0) {
+			x += xVel;
+		}
 	}
 	else if ((time-initialT)<1200) {
-		y += (yVel*dt)+(yAcc*dt*dt);
-		x += xVel;
+		checkPipeCollision();
+		if (collision==0) {
+			y += (yVel*dt)+(yAcc*dt*dt);
+		}
+
+		checkCollisionsVer();
+		if (boxcollision==0) {
+			y += (yVel*dt)+(yAcc*dt*dt);
+		}
+
+		checkPipeCollision();			
+		if (collision==0) { 
+			//x += xVel;
+		}
+
+		//checkCollisionsHor();
+		if (collision==0) {
+			x += xVel;
+		}
 	}
-	else if ((time-initialT)>=1200) {
+	else if (y<=getLevelH()-getHeight()-24 && boxcollision==0) {		
+		checkCollisionsVer();
+		x += xVel;		
+		y += 2*((yVel*dt)+(yAcc*dt*dt));
+	}
+	else {
 		isJumped=false;
 		initialT=0;
 		xVel = 0;
 		yVel = 0;
 		status = 0;
 	}
-	cout << "time-initialT: " << time-initialT << endl;
+	//cout << "time-initialT: " << time-initialT << endl;
 
 }
 
@@ -329,16 +399,17 @@ int Mario::getCameray() {
 	return camera.y;
 }
 
+
 void Mario::setPipes()
 {
 	//First pipe
 	pipes[0].x = 451;
-	pipes[0].y = 142;
+	pipes[0].y = 170;//142;
 	pipes[0].w = 20;
 	pipes[0].h = 50;
 }
 
-void Mario::checkCollision()
+void Mario::checkPipeCollision()
 {
 
 	//The sides of the rectangles
@@ -360,13 +431,255 @@ void Mario::checkCollision()
 	
     	//If any of the sides from A are outside of B
 	if ((rightA>=leftB)&&(leftA<leftB)){
-		collision = 1;
+		pipecollision = 1;
 	} else if ((leftA<=rightB)&&(leftA>leftB)){
-		collision = 1;
+		pipecollision = 1;
 	} else if ((rightA<=rightB)&&(leftA>=leftB)){
-		collision = 1;
+		pipecollision = 1;
 	} else {
-		collision = 0;
+		pipecollision = 0;
 	}
  
 }
+
+
+//Create the collisions for the floors
+void Mario::createFloors() {
+
+	SDL_Rect floor1,floor2,floor3,floor4;
+
+	floor1.x=0;
+	floor1.y=200;
+	floor1.w=1103;
+	floor1.h=24;
+	floor.push_back(floor1);
+	
+	floor2.x=1135;
+	floor2.y=200;
+	floor2.w=240;
+	floor2.h=24;
+	floor.push_back(floor2);
+
+	floor3.x=1423;
+	floor3.y=200;
+	floor3.w=1024;
+	floor3.h=24;
+	floor.push_back(floor3);
+
+	floor4.x=2479;
+	floor4.y=200;
+	floor4.w=912;
+	floor4.h=24;
+	floor.push_back(floor4);
+}
+
+//Create the collisions for boxes
+void Mario::createBoxes() {
+	SDL_Rect box1,box2,box3,box4,box5,box6,box7,box8,box9;
+	SDL_Rect box10,box11,box12,box13,box14,box15,box16,box17;
+
+	box1.x=256;
+	box1.y=136;
+	box1.w=16;
+	box1.h=16;
+	boxes.push_back(box1);
+	
+	box2.x=320;
+	box2.y=136;
+	box2.w=80;
+	box2.h=16;
+	boxes.push_back(box2);
+
+	box3.x=352;
+	box3.y=72;
+	box3.w=16;
+	box3.h=16;
+	boxes.push_back(box3);
+
+	box4.x=1232;
+	box4.y=136;
+	box4.w=48;
+	box4.h=16;
+	boxes.push_back(box4);
+
+	box5.x=1280;
+	box5.y=72;
+	box5.w=128;
+	box5.h=16;
+	boxes.push_back(box5);
+
+	box6.x=1456;
+	box6.y=72;
+	box6.w=64;
+	box6.h=16;
+	boxes.push_back(box6);
+
+	box7.x=1504;
+	box7.y=136;
+	box7.w=16;
+	box7.h=16;
+	boxes.push_back(box7);
+
+	box8.x=1600;
+	box8.y=136;
+	box8.w=32;
+	box8.h=16;
+	boxes.push_back(box8);
+
+	box9.x=1696;
+	box9.y=136;
+	box9.w=16;
+	box9.h=16;
+	boxes.push_back(box9);
+
+	box10.x=1744;
+	box10.y=136;
+	box10.w=16;
+	box10.h=16;
+	boxes.push_back(box10);
+
+	box11.x=1792;
+	box11.y=136;
+	box11.w=16;
+	box11.h=16;
+	boxes.push_back(box11);
+
+	box12.x=1744;
+	box12.y=72;
+	box12.w=16;
+	box12.h=16;
+	boxes.push_back(box12);
+
+	box13.x=1888;
+	box13.y=136;
+	box13.w=16;
+	box13.h=16;
+	boxes.push_back(box13);
+	
+	box14.x=1936;
+	box14.y=72;
+	box14.w=48;
+	box14.h=16;
+	boxes.push_back(box14);
+
+	box15.x=2048;
+	box15.y=72;
+	box15.w=64;
+	box15.h=16;
+	boxes.push_back(box15);
+
+	box16.x=2064;
+	box16.y=136;
+	box16.w=32;
+	box16.h=16;
+	boxes.push_back(box16);
+
+	box17.x=2688;
+	box17.y=136;
+	box17.w=64;
+	box17.h=16;
+	boxes.push_back(box17);
+}
+
+bool Mario::check_collision( SDL_Rect A, SDL_Rect B )
+{
+
+	//MARIO = A
+
+    //The sides of the rectangles
+    int leftA, leftB;
+    int rightA, rightB;
+    int topA, topB;
+    int bottomA, bottomB;
+
+    //Calculate the sides of rect A
+    leftA = x;
+    rightA = x + marioWidth;
+    topA = y;
+    bottomA = y + marioHeight;
+
+    //Calculate the sides of rect B
+    leftB = B.x;
+    rightB = B.x + B.w;
+    topB = B.y;
+    bottomB = B.y + B.h;
+
+    //If any of the sides from A are outside of B
+	//check horizontal
+	//cout << "bottomA:" << bottomA << " topB:" << topB << " topA:" << topA << " bottomB:" << bottomB << endl;
+	//cout << "leftA:" << leftA << " leftB:" << leftB << " rightB:" << rightB << endl;
+	if (bottomA>=topB && topA<topB && leftA>=leftB && leftA<=rightB){
+		//cout << "1";
+		return true;
+	} else if (topA<=bottomB && topA>topB && leftA>=leftB && leftA<=rightB){
+		//cout << "2";
+		return true;
+	} else if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
+		//cout << "4";	
+		return true;
+	} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){
+		//cout << "5";	
+		return true;
+	} else {
+		//cout << "3";
+		return false;
+	}
+}
+
+
+void Mario::checkCollisionsHor() {
+
+	// if mario went too far to the left or right
+	if((x < 0) || (getX() + getWidth() > getLevelW())) {
+        	x -= xVel;	// move back
+	}
+
+	//Floor (RIGHT / LEFT)
+	for (int i = 0 ; i < floor.size() ; i++ ) {
+		if(check_collision(marioRect,floor[i]) ) {
+			if ((marioRect.x <= (floor[i].x+floor[i].w)) && (marioRect.x >=floor[i].x) && ((marioRect.y+marioRect.h)!=floor[i].y)) 
+				{ cout <<"Case 1" <<endl;
+				 collision=1; }
+			//if ( ((marioRect.x+marioRect.w) > floor[i].x)  && (marioRect.y+marioRect.h) != floor[i].y ) 
+		//		{ cout << "Case 2" <<endl;
+		//			collision=1; }
+		}
+	}
+
+	//Boxes (RIGHT / LEFT)
+	for ( int m=0 ; m<boxes.size() ; m++ ) {
+		if ( check_collision(marioRect,boxes[m]) ) {
+			if ((marioRect.x < (boxes[m].x+boxes[m].w)) && (marioRect.x >= boxes[m].x) && (marioRect.y == boxes[m].y+boxes[m].h )) 
+				{ cout << "Case 3" <<endl;
+				collision=1; }
+			if ( ((marioRect.x+marioRect.w) > boxes[m].x)  && ((marioRect.x+marioRect.w) <= (boxes[m].x + boxes[m].w)) && (marioRect.y+marioRect.h)==boxes[m].y ) 
+				{ cout << "Case 4" <<endl;
+				 collision=1; }
+		}
+	}
+
+}
+
+void Mario::checkCollisionsVer() {
+
+	//Floor (UP / DOWN)
+	for ( int z = 0 ; z < floor.size() ; z++ ) {
+		if (/*(y < 0) || */( ((y+marioHeight)>=floor[z].y )/* && check_collision(marioRect,floor[z])*/)) {
+			y = getLevelH() - getHeight() - 24;
+	   		//y -= yVel;	// move back
+			floorcollision = 1;
+		}
+	}
+
+	//Boxes (UP / DOWN)
+	for (int j = 0 ; j < boxes.size() ; j++ ) {
+		if ( check_collision(marioRect,boxes[j]) ) {
+			collision = 1;
+			if ( ((y+marioHeight)>=boxes[j].y) && (y<boxes[j].y) && (x>=boxes[j].x) && (x<=(boxes[j].x+boxes[j].w))){
+				//y = boxes[j].y - marioHeight;
+				boxcollision = 1;
+			}
+		}
+	}
+}
+
