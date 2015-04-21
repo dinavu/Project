@@ -30,7 +30,7 @@ int main( int argc, char* args[] ) {
 	Goomba Goomba1(500, 168);	
 	Goomba Goomba2(550, 168);
 	Koopa Koopa1(350, 100, 300, 375);
-	Plant Plant1(451, 150);//451, 142);
+	Plant Plant1(451, 170);//451, 142);
 	
 	// assign enemies
 	myenemies[0] = &Goomba1;
@@ -84,7 +84,10 @@ int main( int argc, char* args[] ) {
      		fps.start();					// start the frame timer
 		time = SDL_GetTicks();				// microseconds that have passed
        		while(SDL_PollEvent(&event)) {			// there are events to handle
-        		myMario.handle_input(event,time);	// handle events for mario
+			isJumped = myMario.getisJumped(); 
+			if (isJumped == false){
+        			myMario.handle_input(event,time);	// handle events for mario
+			}
 			myFireball.handleFire(event);		// handle events for fireball
         		if(event.type==SDL_QUIT) {		// user has Xed out the window
                 		quit=true;			// quit the program
@@ -105,6 +108,7 @@ int main( int argc, char* args[] ) {
 
 		// determine how to update mario's position
 		isJumped = myMario.getisJumped(); 
+		cout << "jump: " << isJumped << endl;
 		if (isJumped == true) {
 			myMario.jump(time);
 		}	
