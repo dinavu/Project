@@ -63,6 +63,7 @@ protected:
 	SDL_Rect marioRect;
 	int up,down,left,right;
 	int floorcollision;
+	int boxcollision;
 };
 
 #endif

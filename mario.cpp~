@@ -185,7 +185,7 @@ void Mario::move() {
 
 	checkCollisionsVer();
 
-	if (collision==0 && floorcollision==0) {
+	if (collision==0 && floorcollision==0 /*&& boxcollision==0*/) {
 		y += getHeight() /8;	// move mario up or down
 	}
 
@@ -196,6 +196,7 @@ void Mario::move() {
 
 	collision = 0;
 	floorcollision = 0;
+	boxcollision = 0;
 	
 	//Update Mario's Rectangle position
 	marioRect.x=x;
@@ -236,7 +237,7 @@ void Mario::jump(int time) {
 		}
 
 		checkCollisionsVer();
-		//if (collision==1) {
+		//if (boxcollision==0) {
 			y += (yVel*dt)+(yAcc*dt*dt);
 		//}
 
@@ -665,8 +666,11 @@ void Mario::checkCollisionsVer() {
 	//Boxes (UP / DOWN)
 	for (int j = 0 ; j < boxes.size() ; j++ ) {
 		if ( check_collision(marioRect,boxes[j]) ) {
-			cout << "hi";
 			collision = 1;
+			if ( (y<=(boxes[j].y+boxes[j].h)) && (y>boxes[j].y) && (x>=boxes[j].x) && (x<=(boxes[j].x+boxes[j].w))){
+				//y = boxes[j].y - marioHeight;
+				//boxcollision = 1;
+			}
 		}
 	}
 }
