@@ -47,7 +47,7 @@ void Enemy::update()
 	}
 }
 
-void Enemy::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh){
+void Enemy::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh, bool isFire){
 	//set collision equal to zero initially
 	int collision = 0;
 	//set variables
@@ -60,14 +60,16 @@ void Enemy::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int f
     	int topB = firey;
     	int bottomB = firey + fireh -70;
 	//check collisions
-	if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
-		collision = 1;
-	} else if (topA<=bottomB && topA>topB && leftA>leftB && leftA<rightB){
-		collision = 1;
-	} else if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
-		collision = 1;
-	} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
-		collision = 1;
+	if(isFire==true){
+		if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
+			collision = 1;
+		} else if (topA<=bottomB && topA>topB && leftA>leftB && leftA<rightB){
+			collision = 1;
+		} else if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
+			collision = 1;
+		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
+			collision = 1;
+		}
 	}
 	//set death to true if enemy is hit by fireball
 	if (collision == 1){
@@ -90,6 +92,8 @@ bool Enemy::mDead(int mariox,int marioy){
     	int topB = box.y;
     	int bottomB = box.y + enemy_height;
 	//check collisions
+
+if( death == false){
 	if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
 		collision = 1;
 	} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
@@ -101,6 +105,7 @@ bool Enemy::mDead(int mariox,int marioy){
 	} else {
 		return false;
 	}
+}
 }
 
 bool Enemy::isDead(){

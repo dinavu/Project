@@ -24,10 +24,10 @@ void Goomba::move()
 	Enemy::move();
 }
 
-void Goomba::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh)
+void Goomba::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh,bool isFire)
 {
 	//check fireball
-	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh);
+	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh,isFire);
 	int collision = 0;
 	//check mario jump
 	//set variables

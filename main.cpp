@@ -26,7 +26,10 @@ int main( int argc, char* args[] ) {
 
 	// instantiate enemies
 	vector < Enemy* > myenemies(4);		//Create a vector of enemies
-	
+
+	// Number of fireballs used
+	int fireballcount = 0;
+
 	Goomba Goomba1(500, 168);	
 	Goomba Goomba2(550, 168);
 	Koopa Koopa1(350, 100, 300, 375);
@@ -83,7 +86,10 @@ int main( int argc, char* args[] ) {
 	while(quit==false) {					// user has not quit
      		fps.start();					// start the frame timer
 		time = SDL_GetTicks();				// microseconds that have passed
-       		while(SDL_PollEvent(&event)) {			// there are events to handle
+       	
+
+
+		while(SDL_PollEvent(&event)) {			// there are events to handle
         		myMario.handle_input(event,time);	// handle events for mario
 			myFireball.handleFire(event);		// handle events for fireball
         		if(event.type==SDL_QUIT) {		// user has Xed out the window
@@ -91,14 +97,19 @@ int main( int argc, char* args[] ) {
         		}
 			else if(event.type == SDL_KEYDOWN) {
 				if(event.key.keysym.sym == SDLK_SPACE){
-					if (myMario.getX()>312) {
-						myFireball.setFireX(myMario.getX()-myMario.getCamerax());
+					myFireball.countup();
+					fireballcount = myFireball.getCount();
+					if (fireballcount < 6){
+						if (myMario.getX()>312) {
+							myFireball.setFireX(myMario.getX()-myMario.getCamerax());
+						}
+						else {
+							myFireball.setFireX(myMario.getX());
+						}
+				
+						myFireball.setFireY(myMario.getY()-myMario.getHeight()/2);
+						marioDir=myMario.getStatus();
 					}
-					else {
-						myFireball.setFireX(myMario.getX());
-					}
-					myFireball.setFireY(myMario.getY()-myMario.getHeight()/2);
-					marioDir=myMario.getStatus();
 				}
 			}
         	}
@@ -127,7 +138,13 @@ int main( int argc, char* args[] ) {
 			myenemies[i]->move();
 		}
 		
-		myFireball.moveFire(marioDir);
+		for (int j=0; j<e_num; j++){			
+			myFireball.checkDeath(myenemies[j]->getX(),myenemies[j]->getY(),myenemies[j]->getWidth(),myenemies[j]->getHeight(), myenemies[j]->isDead());
+		}
+
+		if (myFireball.getIsFire()){
+			myFireball.moveFire(marioDir);
+		}
 		
 		// reset the screen and display updated scene
 		myGraphics.clearScreen(myGraphics.getScreen());
@@ -193,7 +210,7 @@ int main( int argc, char* args[] ) {
 
 		//check if enemy is hit by fireball
 		for (int i=0; i<e_num; i++ ) {		
-			myenemies[i]->checkDeath(myMario.getY(),myMario.getX(),myFireball.getFireX(),myFireball.getFireY(),myFireball.getFireW(),myFireball.getFireH());
+			myenemies[i]->checkDeath(myMario.getY(),myMario.getX(),myFireball.getFireX(),myFireball.getFireY(),myFireball.getFireW(),myFireball.getFireH(),myFireball.getIsFire());
 		}
 
 		//Move goomba left

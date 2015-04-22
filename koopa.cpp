@@ -52,9 +52,9 @@ bool Koopa::isDead()
 	Enemy::isDead();
 }
 
-void Koopa::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh)
+void Koopa::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh,bool isFire)
 {
-	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh);
+	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh,isFire);
 		int collision = 0;
 	//check mario jump
 	//set variables
@@ -67,6 +67,7 @@ void Koopa::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int f
     	int topB = box.y;
     	int bottomB = box.y + enemy_height;
 	//check collisions
+
 	if (bottomA>=topB && topA<topB && leftA>=leftB && leftA<=rightB){
 		collision = 1;
 	} 

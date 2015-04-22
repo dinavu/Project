@@ -32,9 +32,9 @@ void Plant::update()
 
 }
 
-void Plant::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh)
+void Plant::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh,bool isFire)
 {
-	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh);
+	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh,isFire);
 }
 
 bool Plant::mDead(int mariox,int marioy){
@@ -51,6 +51,8 @@ bool Plant::mDead(int mariox,int marioy){
     	int topB = box.y;
     	int bottomB = box.y + enemy_height;
 	//check collisions
+if (death == false){
+
 	if (bottomA>=topB && topA<topB && leftA>=leftB && leftA<=rightB){
 		collision = 1;
 	} 
@@ -60,6 +62,7 @@ bool Plant::mDead(int mariox,int marioy){
 	} else {
 		return false;
 	}
+}
 }
 
 bool Plant::isDead()

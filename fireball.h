@@ -27,6 +27,9 @@ public:
 	SDL_Rect *getFireR();		// return fireball's right motion clip
 	SDL_Rect *getFireL();		// return fireball's left motion clip
 	bool getIsFire();		// return truth value of isFire
+	void checkDeath(int, int, int, int, bool);		// Checks if fireball collides with anything
+	void countup();			// increase fireballcount
+	int getCount();
 
 private:
 	int fireX, fireY;		// x and y offsets of the fireball
@@ -36,6 +39,8 @@ private:
 	int fireH;			// fireball height
 	int fireW;			// fireball width
 	bool isFire;			// true/false that there is a fireball to display
+	int fireballcount;		// Keeps track of how many fireballs can be used
+	bool collision;			// Enemy or obstacle collision
 };
 
 #endif
