@@ -173,7 +173,7 @@ void Mario::move() {
 	checkPipeCollision();
 
 	if (collision==0) {
-		x += xVel;			// move mario left or right
+		x += 2*xVel;			// move mario left or right
 	}
 	
 	checkCollisionsHor();
@@ -195,6 +195,12 @@ void Mario::move() {
 		y -= getHeight() /8;		// move back
 	}
 
+	while ( (y>=136) && (y<=152)  /*&& (isJumped==false)*/ ) {
+		//y=200;
+		y += getHeight() /8;
+		cout << y << endl;
+	} 
+
 	collision = 0;
 	floorcollision = 0;
 	boxcollision = 0;
@@ -202,6 +208,8 @@ void Mario::move() {
 	//Update Mario's Rectangle position
 	marioRect.x=x;
 	marioRect.y=y;
+
+//	cout << "Mario Y: " << y << endl;
 }
 
 // make Mario do a full jump
@@ -232,7 +240,7 @@ void Mario::jump(int time) {
 	else if ((time-initialT)<1200) {
 		checkCollisionsVer();
 		checkPipeCollision();
-		if (boxcollision==0) {
+		if (boxcollision==0 || y==136) {
 			y += (yVel*dt)+(yAcc*dt*dt);
 		}
 		if (collision==0) {
@@ -472,11 +480,11 @@ void Mario::checkPipeCollision() {
 			boxcollision = 1;
 		//check vertical
 		} else if (rightA>=leftB && leftA<leftB && bottomA>=topB && topA<=bottomB){
-			x -= xVel;
+			x -= 2*xVel;
 			collision = 1;
 			boxcollision = 1;
 		} else if (leftA<=rightB && rightA>rightB && bottomA>=topB && topA<=bottomB){	
-			x -= xVel;
+			x -= 2*xVel;
 			collision = 1;
 			boxcollision = 1;
 		} 
