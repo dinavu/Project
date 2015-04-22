@@ -15,6 +15,9 @@ Graphics::Graphics() {
 	iconX=150;
 	iconY=260;
 	play=0;
+	textColor.r=0;
+	textColor.b=0;
+	textColor.g=0;
 	init();
 	screen=SDL_SetVideoMode(screenWidth, screenHeight, screenBPP, SDL_SWSURFACE | SDL_RESIZABLE);
 }
@@ -76,6 +79,11 @@ bool Graphics::init() {
 	// Set the window caption
 	SDL_WM_SetCaption("Super Mario Bros", NULL);
 
+	// initialize ttf font
+	if(TTF_Init()==-1) {
+		return false;
+	}
+
 	return true;	// everything initialized fine
 }
 
@@ -92,6 +100,7 @@ bool Graphics::load_files() {
 	goomba = load_image("images/goomba.png");			// goomba enemy clips
 	koopa = load_image("images/koopa2.png");			// koopa enemy clips
 	plant = load_image("images/plant.png");				// plant enemy clips
+	font = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);		// beginning of level font
 
 	// if there was a problem in loading the dot
 	if(mario==NULL) {
@@ -130,6 +139,11 @@ bool Graphics::load_files() {
 	
 	// problem loading plant enemy
 	if(plant == NULL) {
+		return false;
+	}
+
+	// problem loading 
+	if(font == NULL) {
 		return false;
 	}
 
@@ -268,4 +282,9 @@ int Graphics::runHomescreen(SDL_Event event) {
 	
 	SDL_FreeSurface(startScreen);
 	SDL_FreeSurface(goombaIcon);
+}
+
+// reset the screen
+SDL_Rect Graphics::clearScreenB(SDL_Surface* screen) {
+	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF));
 }

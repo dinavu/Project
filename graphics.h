@@ -5,9 +5,9 @@
 
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include "SDL/SDL_ttf.h"
 #include <string>
 using namespace std;
-
 class Graphics {
 
 public:
@@ -29,6 +29,7 @@ public:
 	bool initHome();			// intialize all SDL subsystems for the homescreen
 	int showHome();				// updates the homescreen
 	int runHomescreen(SDL_Event event);	// runs the homescreen
+	SDL_Rect clearScreenB(SDL_Surface*);
 
 protected:
 	int screenWidth;			// width of the screen
@@ -54,6 +55,9 @@ protected:
 	SDL_Rect clipsfireR[4];			// images for fireball moving right
 	SDL_Rect clipsfireL[4];			// images for fireball moving left
 	SDL_Event event;
+	TTF_Font *font;				// game text font
+	SDL_Surface *prelevel;			// states level and life count
+	SDL_Color textColor;
 };
 
 #endif
