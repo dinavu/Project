@@ -1,5 +1,5 @@
 // fireball.cpp
-
+#include <iostream>
 #include "fireball.h"
 using namespace std;
 
@@ -14,6 +14,8 @@ Fireball::Fireball(int x, int y) {
 	fireFrame=0;
 	fireStatus=0;
 	isFire = false;
+	fireballcount = 0;
+	collision = false;
 }
 
 // sets the clip images for the fireball
@@ -67,30 +69,66 @@ void Fireball::handleFire(SDL_Event event) {
 				fireXvel = fireW / 4;
 				fireYvel = sqrt(fireW/4);
 				isFire = true;
+				//fireballcount++;
 		}
 	}
+
 }
 
 // move fireball
 void Fireball::moveFire(int marioDirection) {
-	if (marioDirection==1) {
-		fireX -= fireXvel;
-	}
-	else {
-		fireX += fireXvel;
-	}
-	fireY += fireYvel;
+	if (isFire==true){
+		if (marioDirection==1) {
+			fireX -= fireXvel;
+		}
+		else {
+			fireX += fireXvel;
+		}
+		fireY += fireYvel;		
 
-	if((fireX < 0) || (fireX + fireW > screenWidth)) {
+		if((fireX < 0) || (fireX + fireW > screenWidth)) {		
+			isFire = false;
+		}
+
+		if (fireY > (screenHeight-fireH/2)) {
+			fireYvel = -sqrt(fireW/4);
+		}
+		else if (fireY < (screenHeight - fireH)) {
+			fireYvel = sqrt(fireW/4);
+		}
+	}
+}
+
+void Fireball::checkDeath(int enemyX, int enemyY, int enemyW, int enemyH, bool enemydead){
+	//set collision equal to zero initially
+	int collision = 0;
+	//set variables
+	int leftA = fireX;
+    	int rightA = fireX + fireW;
+    	int topA = fireY;
+    	int bottomA = fireY + fireH;
+	int leftB = enemyX;
+    	int rightB = enemyX + enemyW;
+    	int topB = enemyY;
+    	int bottomB = enemyY + enemyH;
+	//check collisions
+	if (enemydead == false && isFire == true){
+		if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
+			collision = 1;
+		} else if (topA<=bottomB && topA>topB && leftA>leftB && leftA<rightB){
+			collision = 1;
+		} else if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
+			collision = 1;
+		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
+			collision = 1;
+		}
+	}
+	//set delete fireball if it hits an enemy
+	if (collision == 1){
 		isFire = false;
+		cout<<"HIT"<<endl;
 	}
 
-	if (fireY > (screenHeight-fireH/2)) {
-		fireYvel = -sqrt(fireW/4);
-	}
-	else if (fireY < (screenHeight - fireH)) {
-		fireYvel = sqrt(fireW/4);
-	}
 }
 
 // display the updated fireball on the screen
@@ -150,4 +188,20 @@ SDL_Rect* Fireball::getFireL() {
 // return the truth value of isFire
 bool Fireball::getIsFire() {
 	return isFire;
+}
+
+int Fireball::getFireW() {
+	return fireW;
+}
+
+int Fireball::getFireH() {
+	return fireH;
+}
+
+int Fireball::getCount() {
+	return fireballcount;
+}
+
+void Fireball::countup() {
+	fireballcount++;
 }

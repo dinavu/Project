@@ -21,6 +21,12 @@ class Enemy : public Graphics
 	int virtual getWidth();		//returns enemies width
 	int virtual getHeight(); 	//returns enemies height
 	int virtual getStatus(); 	//returns enemies status
+	bool virtual isDead();		//returns death
+	void virtual checkDeath(int,int,int,int,int,int,bool);//checks if the enemy has been killed
+	bool virtual mDead(int,int);	//returns true if mario is dead
+	void virtual setX(int);		// sets enemy x coordinate
+	void virtual setY(int);		// sets enemy y coordinate
+	void virtual resetDeath();	// resets all the enemies to alive
 
 	protected:
 	int xVel,yVel; 			//Its rate of movement
@@ -28,6 +34,7 @@ class Enemy : public Graphics
 	int status; 			//Its animation status
 	int enemy_height, enemy_width;	//enemy width and height
 	SDL_Rect box;			//dimensions of enemy
+	bool death;			//true if the enemy is dead
 };
 
 #endif

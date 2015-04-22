@@ -9,6 +9,7 @@ Enemy::Enemy()
 	//Initialize animation variables
 	frame = 0;
 	status = 1; //staryt left
+	death = false; //enemy starts off alive
 }
 
 void Enemy::move()
@@ -46,6 +47,71 @@ void Enemy::update()
 	}
 }
 
+void Enemy::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh, bool isFire){
+	//set collision equal to zero initially
+	int collision = 0;
+	//set variables
+	int leftA = box.x;
+    	int rightA = box.x + enemy_width;
+    	int topA = box.y;
+    	int bottomA = box.y + enemy_height;
+	int leftB = firex;
+    	int rightB = firex + firew -10;
+    	int topB = firey;
+    	int bottomB = firey + fireh -70;
+	//check collisions
+	if(isFire==true){
+		if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
+			collision = 1;
+		} else if (topA<=bottomB && topA>topB && leftA>leftB && leftA<rightB){
+			collision = 1;
+		} else if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
+			collision = 1;
+		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
+			collision = 1;
+		}
+	}
+	//set death to true if enemy is hit by fireball
+	if (collision == 1){
+		death = true;
+	}
+
+}
+
+bool Enemy::mDead(int mariox,int marioy){
+	//set collision equal to 0	
+	int collision = 0;
+	//check mario jump
+	//set variables
+	int leftA = mariox;
+    	int rightA = mariox + 16 ;
+    	int topA = marioy;
+    	int bottomA = marioy + 32;
+	int leftB = box.x;
+    	int rightB = box.x + enemy_width;
+    	int topB = box.y;
+    	int bottomB = box.y + enemy_height;
+	//check collisions
+
+	if( death == false){
+		if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
+			collision = 1;
+		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){
+			collision = 1;
+		}
+
+		if ((collision == 1)&&(death==false)){
+			return true;
+		} else {
+			return false;
+		}
+	}
+}
+
+bool Enemy::isDead(){
+	return death;
+}
+
 void Enemy::set_clips(){}
 
 SDL_Rect *Enemy::getLclip() {}// return enemy's left motion clip
@@ -76,4 +142,16 @@ int Enemy::getHeight() // returns enemies height
 int Enemy::getStatus()
 {
 	return status;
+}
+
+void Enemy::setX(int x) {
+	box.x = x;
+}
+
+void Enemy::setY(int y)	 {
+	box.y = y;
+}
+
+void Enemy::resetDeath() {
+	death = false;
 }

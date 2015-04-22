@@ -24,6 +24,34 @@ void Goomba::move()
 	Enemy::move();
 }
 
+void Goomba::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh,bool isFire)
+{
+	//check fireball
+	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh,isFire);
+	int collision = 0;
+	//check mario jump
+	//set variables
+	int leftA = mariox;
+    	int rightA = mariox + 16 ;
+    	int topA = marioy;
+    	int bottomA = marioy + 32 -5;
+	int leftB = box.x;
+    	int rightB = box.x + enemy_width;
+    	int topB = box.y;
+    	int bottomB = box.y + enemy_height;
+	//check collisions
+	if (bottomA>=topB && topA<topB && leftA>=leftB && leftA<=rightB){
+		collision = 1;
+	} 
+	if (collision == 1){
+		death = true;
+	}
+}
+
+bool Goomba::mDead(int mariox,int marioy){
+	Enemy::mDead(mariox,marioy);
+}
+
 void Goomba::update()
 {
 	Enemy::update();
@@ -31,6 +59,11 @@ void Goomba::update()
 	if(frame>=8) { // reset frame count
 		frame=0;
 	}
+}
+
+bool Goomba::isDead()
+{
+	Enemy::isDead();
 }
 
 void Goomba::set_clips()
@@ -126,4 +159,16 @@ int Goomba::getHeight() // returns enemies height
 int Goomba::getStatus() 
 {
 	Enemy::getStatus();
+}
+
+void Goomba::setX(int x) {
+	box.x = x;
+}
+
+void Goomba::setY(int y) {
+	box.y = y;
+}
+
+void Goomba::resetDeath() {
+	Enemy::resetDeath();
 }

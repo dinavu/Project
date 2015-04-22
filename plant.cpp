@@ -32,6 +32,44 @@ void Plant::update()
 
 }
 
+void Plant::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh,bool isFire)
+{
+	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh,isFire);
+}
+
+bool Plant::mDead(int mariox,int marioy){
+	Enemy::mDead(mariox,marioy);
+	int collision = 0;
+	//check mario jump
+	//set variables
+	int leftA = mariox;
+    	int rightA = mariox + 16 ;
+    	int topA = marioy;
+    	int bottomA = marioy + 32;
+	int leftB = box.x;
+    	int rightB = box.x + enemy_width;
+    	int topB = box.y;
+    	int bottomB = box.y + enemy_height;
+	//check collisions
+if (death == false){
+
+	if (bottomA>=topB && topA<topB && leftA>=leftB && leftA<=rightB){
+		collision = 1;
+	} 
+
+	if (collision == 1 && death == false){
+		return true;
+	} else {
+		return false;
+	}
+}
+}
+
+bool Plant::isDead()
+{
+	Enemy::isDead();
+}
+
 void Plant::set_clips()
 {
 	clips[0].x = 0;
@@ -86,4 +124,14 @@ int Plant::getStatus()
 	Enemy::getStatus();
 }
 
+void Plant::setX(int x) {
+	box.x = x;
+}
 
+void Plant::setY(int y) {
+	box.y = y;
+}
+
+void Plant::resetDeath() {
+	Enemy::resetDeath();
+}

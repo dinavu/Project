@@ -47,6 +47,39 @@ void Koopa::update()
 	}
 }
 
+bool Koopa::isDead()
+{
+	Enemy::isDead();
+}
+
+void Koopa::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int fireh,bool isFire)
+{
+	Enemy::checkDeath(marioy,mariox,firex,firey,firew,fireh,isFire);
+		int collision = 0;
+	//check mario jump
+	//set variables
+	int leftA = mariox;
+    	int rightA = mariox + 16;
+    	int topA = marioy;
+    	int bottomA = marioy + 32 -5;
+	int leftB = box.x;
+    	int rightB = box.x + enemy_width;
+    	int topB = box.y;
+    	int bottomB = box.y + enemy_height;
+	//check collisions
+
+	if (bottomA>=topB && topA<topB && leftA>=leftB && leftA<=rightB){
+		collision = 1;
+	} 
+	if (collision == 1){
+		death = true;
+	}
+}
+
+bool Koopa::mDead(int mariox,int marioy){
+	Enemy::mDead(mariox,marioy);
+}
+
 void Koopa::set_clips()
 {
     	//Clip the sprites
@@ -125,4 +158,24 @@ int Koopa::getHeight() // returns enemies height
 int Koopa::getStatus() 
 {
 	Enemy::getStatus();
+}
+
+void Koopa::setXmax(int max) {
+	xmax = max;
+}
+
+void Koopa::setXmin(int min) {
+	xmin = min;
+}
+
+void Koopa::setX(int x) {
+	box.x = x;
+}
+
+void Koopa::setY(int y) {
+	box.y = y;
+}
+
+void Koopa::resetDeath() {
+	Enemy::resetDeath();
 }

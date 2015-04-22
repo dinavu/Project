@@ -20,11 +20,16 @@ public:
 	void setFireY(int);		// sets the y coordinate of fireball
 	int getFireX();			// returns the x coordinate of fireball
 	int getFireY();			// returns the y coordinate of the fireball
+	int getFireH();			// return the fireballs width
+	int getFireW();			// return the fireballs height
 	int getFireFrame();		// return the frame of the fireball's motion
 	int getFireStatus();		// return the status (direction of the fireball
 	SDL_Rect *getFireR();		// return fireball's right motion clip
 	SDL_Rect *getFireL();		// return fireball's left motion clip
 	bool getIsFire();		// return truth value of isFire
+	void checkDeath(int, int, int, int, bool);		// Checks if fireball collides with anything
+	void countup();			// increase fireballcount
+	int getCount();
 
 private:
 	int fireX, fireY;		// x and y offsets of the fireball
@@ -34,6 +39,8 @@ private:
 	int fireH;			// fireball height
 	int fireW;			// fireball width
 	bool isFire;			// true/false that there is a fireball to display
+	int fireballcount;		// Keeps track of how many fireballs can be used
+	bool collision;			// Enemy or obstacle collision
 };
 
 #endif

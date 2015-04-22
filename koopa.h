@@ -20,6 +20,14 @@ class Koopa: public Enemy
 	int virtual getWidth();		//returns enemies width
 	int virtual getHeight(); 	//returns enemies height
 	int virtual getStatus(); 	//returns enemies status
+	bool virtual isDead();		//returns death
+	void virtual checkDeath(int,int,int,int,int,int,bool);//checks if the enemy has been killed
+	bool virtual mDead(int,int);	//returns true if mario is dead
+	void setXmax(int);		// sets the koopa's max x coordinate
+	void setXmin(int);		// sets the koopa's min x coordinate
+	void virtual setX(int);		// sets the x coordinate of the koopa
+	void virtual setY(int);		// sets the y coordinate of the koopa
+	void virtual resetDeath();	// resets a koopa to alive
 
 	private:
 	SDL_Rect clipsLeft[4];		//Koopas left moving clips
