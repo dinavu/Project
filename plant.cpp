@@ -57,7 +57,7 @@ if (death == false){
 		collision = 1;
 	} 
 
-	if (collision == 1){
+	if (collision == 1 && death == false){
 		return true;
 	} else {
 		return false;
