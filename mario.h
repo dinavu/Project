@@ -34,13 +34,18 @@ public:
 	int getCameray();			// return camera's y coordinate
 	bool getisJumped();			// return whether mario is jumping or not
 	void setPipes();			// set pipe coordinates
-	void checkPipeCollision();		// function that checks if mario has collided with a pipe
-	void createFloors();
-	void createBoxes();
-	bool check_collision(SDL_Rect, SDL_Rect);
-	void checkCollisionsHor();
-	void checkCollisionsVer();
-	bool isDead();
+	void checkPipeCollision();		// checks if mario has collided with a pipe
+	void createFloors();			// create floor boundaries
+	void createBoxes();			// create box/brick boundaries
+	bool check_collision(SDL_Rect, SDL_Rect);	// sets the true/false value for collision
+	void checkCollisionsHor();		// checks for a horizontal collision
+	void checkCollisionsVer();		// checks for a vertical collision
+	bool isDead();				// checks if mario was killed
+	SDL_Rect *getOclip();			// returns a clip of mario for prelevel screen
+	void resetDeath();			// sets the value of mario's death to false
+	void makeDead();			// sets the value of mario's death to true
+	void setX();				// resets mario's x coordinate
+	void setY();				// resets mario's y coordinate
 
 protected:
 	float x, y;				// the X and Y offsets of the dot
@@ -57,15 +62,14 @@ protected:
 	bool isJumped;				// true/false that mario is jumping
 	SDL_Rect camera;			// camera object to view specific portion of background
 	int collision;				// true when mario has collided with something
-	int pipecollision;
+	int pipecollision;			// true/false of whether mario collided with a pipe
 	SDL_Rect pipes[31];			// An array of all the pipes coordinates
-	vector <SDL_Rect> floor;
-	vector <SDL_Rect> boxes;
-	SDL_Rect marioRect;
-	int up,down,left,right;
-	int floorcollision;
-	int boxcollision;
-	bool death;
+	vector <SDL_Rect> floor;		// vector of the floor coordinates
+	vector <SDL_Rect> boxes;		// vector of the boxes coordinates
+	SDL_Rect marioRect;			// collisions SDL_Rect for mario		
+	int floorcollision;			// detects a floor collision
+	int boxcollision;			// detects a box collision
+	bool death;				// true/false for alive/dead
 };
 
 #endif

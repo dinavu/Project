@@ -159,3 +159,23 @@ int Koopa::getStatus()
 {
 	Enemy::getStatus();
 }
+
+void Koopa::setXmax(int max) {
+	xmax = max;
+}
+
+void Koopa::setXmin(int min) {
+	xmin = min;
+}
+
+void Koopa::setX(int x) {
+	box.x = x;
+}
+
+void Koopa::setY(int y) {
+	box.y = y;
+}
+
+void Koopa::resetDeath() {
+	Enemy::resetDeath();
+}

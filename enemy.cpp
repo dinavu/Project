@@ -93,19 +93,19 @@ bool Enemy::mDead(int mariox,int marioy){
     	int bottomB = box.y + enemy_height;
 	//check collisions
 
-if( death == false){
-	if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
-		collision = 1;
-	} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
-		collision = 1;
-	}
+	if( death == false){
+		if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
+			collision = 1;
+		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){
+			collision = 1;
+		}
 
-	if ((collision == 1)&&(death==false)){
-		return true;
-	} else {
-		return false;
+		if ((collision == 1)&&(death==false)){
+			return true;
+		} else {
+			return false;
+		}
 	}
-}
 }
 
 bool Enemy::isDead(){
@@ -142,4 +142,16 @@ int Enemy::getHeight() // returns enemies height
 int Enemy::getStatus()
 {
 	return status;
+}
+
+void Enemy::setX(int x) {
+	box.x = x;
+}
+
+void Enemy::setY(int y)	 {
+	box.y = y;
+}
+
+void Enemy::resetDeath() {
+	death = false;
 }

@@ -3,6 +3,7 @@
 //The headers
 #include "SDL/SDL.h"
 #include "SDL/SDL_image.h"
+#include "SDL/SDL_ttf.h"
 #include "graphics.h"
 #include "mario.h"
 #include "timer.h"
@@ -44,11 +45,12 @@ int main( int argc, char* args[] ) {
 	//Number of enemies
 	int e_num = 4;
 
-	// declare variablesi
+	// declare variables
 	int marioDir;			// direction mario faces when initially using fireball
+	int lifeCount=3;		// number of lives mario has remaining
 	bool quit=false;		// quit flag
-	int time;
-	bool isJumped;
+	int time;			// current time from timer
+	bool isJumped;			// determine if mario is jumping or not
 	SDL_Event event;
 
 	// images
@@ -68,7 +70,20 @@ int main( int argc, char* args[] ) {
 	goomba = myGraphics.load_image("images/goomba.png");
 	koopa = myGraphics.load_image("images/koopa2.png");
 	plant = myGraphics.load_image("images/plant.png");
-		
+
+	// fonts
+	TTF_Font *font;
+	SDL_Color textColor = {255, 255, 255};
+	SDL_Surface *preLevel = NULL;
+	SDL_Surface *lifetext1 = NULL;
+	SDL_Surface *lifetext2 = NULL;
+	SDL_Surface *lifetext3 = NULL;
+	font = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);
+	preLevel = TTF_RenderText_Solid( font, "World 1-1", textColor );
+	lifetext1 = TTF_RenderText_Solid( font, " x  3", textColor );
+	lifetext2 = TTF_RenderText_Solid( font, " x  2", textColor );
+	lifetext3 = TTF_RenderText_Solid( font, " x  1", textColor );
+
 	// set image clips
 	myMario.set_clips();		// sets the mario images
 	myFireball.set_clips();		// sets the fireball images
@@ -82,12 +97,49 @@ int main( int argc, char* args[] ) {
 	myGraphics.runHomescreen(event);
 
 	// run the game
-	myGraphics.init();					// resize the game window
-	while(quit==false) {					// user has not quit
-     		fps.start();					// start the frame timer
-		time = SDL_GetTicks();				// microseconds that have passed
-       	
+	while(lifeCount>0) {
 
+		if (myMario.isDead()==true) {
+			myMario.resetDeath();
+			myMario.setX();
+			myMario.setY();
+			Goomba1.setX(500);
+			Goomba1.setY(168);	
+			Goomba2.setX(550);
+			Goomba2.setY(168);
+			Koopa1.setX(350);
+			Koopa1.setY(100);
+			Koopa1.setXmin(300);
+			Koopa1.setXmax(375);
+			Plant1.setX(451);
+			Plant1.setY(142);
+			for (int a=0; a<e_num; a++ ) {
+				myenemies[a]->resetDeath();
+			}
+		}
+
+		// prelevel Screen
+		myGraphics.init();
+	        myGraphics.apply_surface(245, 90, preLevel, myGraphics.getScreen(), NULL);
+		myGraphics.apply_surface(280, 125, mario, myGraphics.getScreen(), myMario.getOclip());
+		if (lifeCount==3) {
+			myGraphics.apply_surface(295, 125, lifetext1, myGraphics.getScreen(), NULL);
+		}
+		else if (lifeCount==2) {
+			myGraphics.apply_surface(295, 125, lifetext2, myGraphics.getScreen(), NULL);
+		}
+		else if (lifeCount==1) {
+			myGraphics.apply_surface(295, 125, lifetext3, myGraphics.getScreen(), NULL);
+		}
+		SDL_Flip(myGraphics.getScreen());
+		SDL_Delay(1500);
+		quit = false;
+
+	// run until death or quit
+	myGraphics.init();					// resize the game window
+	while((quit==false)/*&&(myMario.isDead()==false)*/) {	// user has not quit
+     		fps.start();					// start the frame timer
+		time = SDL_GetTicks();				// microseconds that have passed 	
 
 		while(SDL_PollEvent(&event)) {			// there are events to handle
         		myMario.handle_input(event,time);	// handle events for mario
@@ -99,7 +151,7 @@ int main( int argc, char* args[] ) {
 				if(event.key.keysym.sym == SDLK_SPACE){
 					myFireball.countup();
 					fireballcount = myFireball.getCount();
-					if (fireballcount < 6){
+					if (fireballcount < 15){
 						if (myMario.getX()>312) {
 							myFireball.setFireX(myMario.getX()-myMario.getCamerax());
 						}
@@ -122,14 +174,6 @@ int main( int argc, char* args[] ) {
 		else {
 	        	myMario.move();
 		}
-
-		// DEBUGGGGGGGGGG
-		/*cout << "MARIO STATS" << endl;
-		cout << "isJumped: " << isJumped << endl;
-		cout << "x: " << myMario.getX() << endl;
-		cout << "y: " << myMario.getY() << endl;
-		cout << "status: " << myMario.getStatus() << endl;*/
-
 	
         	myMario.set_camera();	// set the camera centered on mario
 		
@@ -247,16 +291,21 @@ int main( int argc, char* args[] ) {
         		SDL_Delay((1000/20)-fps.get_ticks());
     		}
 
-		//check if quit is true
-		if (myMario.isDead()==true){
-			quit = true;
-		}
 		//check if mario has collided with enemies
 		for (int i=0; i<e_num; i++ ) {
 			if (myenemies[i]->mDead(myMario.getX(),myMario.getY()) == true){
+				myMario.makeDead();
 				quit = true;
 			}
 		}
+
+		//check if quit is true
+		if (myMario.isDead()==true){
+			quit = true;
+			lifeCount--;
+		}
+	}
+
 	}
 
 	SDL_FreeSurface(mario);
@@ -267,6 +316,13 @@ int main( int argc, char* args[] ) {
 	SDL_FreeSurface(goomba);
 	SDL_FreeSurface(koopa);
 	SDL_FreeSurface(plant);
+	SDL_FreeSurface(preLevel);
+	SDL_FreeSurface(lifetext1);
+	SDL_FreeSurface(lifetext2);
+	SDL_FreeSurface(lifetext3);
+
+	TTF_CloseFont(font);
+	TTF_Quit();
 
 	return 0;
 }

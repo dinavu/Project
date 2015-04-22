@@ -22,6 +22,9 @@ class Goomba: public Enemy
 	bool virtual isDead();		//returns death
 	void virtual checkDeath(int,int,int,int,int,int,bool);//checks if the enemy has been killed
 	bool virtual mDead(int,int);	//returns true if mario is dead
+	void virtual setX(int);		// sets the x coordinate of the goomba
+	void virtual setY(int);		// sets the y coordinate of the goomba
+	void virtual resetDeath();	// resets the enemy to alive
 
 	private:
 	SDL_Rect clipsLeft[8];		//Goomba's left moving clips

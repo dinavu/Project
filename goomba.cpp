@@ -160,3 +160,15 @@ int Goomba::getStatus()
 {
 	Enemy::getStatus();
 }
+
+void Goomba::setX(int x) {
+	box.x = x;
+}
+
+void Goomba::setY(int y) {
+	box.y = y;
+}
+
+void Goomba::resetDeath() {
+	Enemy::resetDeath();
+}

@@ -15,10 +15,11 @@ Mario::Mario() {
 	xVel=0;
 	yVel=0;
 	yAcc=.05;
-	dt=0.8;//1.2;
+	dt=0.8;
 	initialT=0;
 	marioWidth=16;
 	marioHeight=32;
+	collision=0;
 	isCrouched=false;
 	isJumped=false;
 	death = false;
@@ -29,15 +30,15 @@ Mario::Mario() {
 	camera.w=640;
 	camera.h=224;
 
-	setPipes();		// initialize the pipe dimensions for the level
-
+	// set environment
+	setPipes();
 	createFloors();
 	createBoxes();
 	marioRect.x=getX();
 	marioRect.y=getY();
 	marioRect.w=getWidth();
 	marioRect.h=getHeight();
-	collision=0;
+
 }
 
 // adjust mario's velocity based on key pressed
@@ -229,7 +230,6 @@ void Mario::jump(int time) {
 		}
 	}
 	else if ((time-initialT)<1200) {
-		//checkPipeCollision();
 		checkCollisionsVer();
 		checkPipeCollision();
 		if (boxcollision==0) {
@@ -261,7 +261,6 @@ void Mario::jump(int time) {
 		yVel = 0;
 		status = 0;
 	}
-	//cout << "time-initialT: " << time-initialT << endl;
 
 }
 
@@ -334,6 +333,16 @@ int Mario::getY() {
 	return y;
 }
 
+// resets mario's x coordinate
+void Mario::setX() {
+	x = 25;
+}
+
+// resets mario's y coordinate
+void Mario::setY() {
+	y = 168;
+}
+
 // return mario's width
 int Mario::getWidth() {
 	return marioWidth;
@@ -384,6 +393,11 @@ SDL_Rect *Mario::getJclip() {
 	return &clipsJump[getFrame()];
 }
 
+// return prelevel mario image
+SDL_Rect *Mario::getOclip() {
+	return &clipsRight[0];
+}
+
 // get camera's x coordinate
 int Mario::getCamerax() {
 	return camera.x;
@@ -394,9 +408,8 @@ int Mario::getCameray() {
 	return camera.y;
 }
 
-
-void Mario::setPipes()
-{
+// set pipe coordinates
+void Mario::setPipes() {
 	//First pipe
 	pipes[0].x = 448; pipes[0].y = 168; pipes[0].w = 32; pipes[0].h = 32;
 	pipes[1].x = 608; pipes[1].y = 152; pipes[1].w = 32; pipes[1].h = 48;
@@ -432,8 +445,8 @@ void Mario::setPipes()
 	
 }
 
-void Mario::checkPipeCollision()
-{
+// checks for mario pipe collisions
+void Mario::checkPipeCollision() {
 	for (int i=0; i<31; i++) {
 
 		//The sides of the rectangles
@@ -469,7 +482,6 @@ void Mario::checkPipeCollision()
 		} 
 	} 
 }
-
 
 //Create the collisions for the floors
 void Mario::createFloors() {
@@ -609,8 +621,8 @@ void Mario::createBoxes() {
 	boxes.push_back(box17);
 }
 
-bool Mario::check_collision( SDL_Rect A, SDL_Rect B )
-{
+// determines if there is a collision
+bool Mario::check_collision( SDL_Rect A, SDL_Rect B ) {
 	//MARIO = A
     //The sides of the rectangles
     int leftA, leftB;
@@ -649,7 +661,7 @@ bool Mario::check_collision( SDL_Rect A, SDL_Rect B )
 	}
 }
 
-
+// checks for a horizontal collision
 void Mario::checkCollisionsHor() {
 
 	// if mario went too far to the left or right
@@ -658,6 +670,7 @@ void Mario::checkCollisionsHor() {
 	}
 }
 
+// checks for a vertical collision
 void Mario::checkCollisionsVer() {
 
 	//Going out the top of the screen
@@ -685,12 +698,22 @@ void Mario::checkCollisionsVer() {
 	}
 
 	//Check for marios death
-	if ((y+marioHeight) >= 216 ) {
+	if (y >= 224 ) {
 		death = true;
 	}
 }
 
-bool Mario::isDead(){
+// determine if mario is dead
+bool Mario::isDead() {
 	return death;
 }
 
+// sets the value of mario's death variable to false
+void Mario::resetDeath() {
+	death = false;
+}
+
+// sets the value of mario's death variable to true
+void Mario::makeDead() {
+	death = true;
+}

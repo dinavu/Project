@@ -22,6 +22,9 @@ class Plant: public Enemy
 	bool virtual isDead();		//returns death
 	void virtual checkDeath(int,int,int,int,int,int,bool);//checks if the enemy has been killed
 	bool virtual mDead(int,int);	//returns true if mario is dead
+	void virtual setX(int);		// sets the x coordinate of the plant
+	void virtual setY(int);		// sets the y coordinate of the plant
+	void virtual resetDeath();	// resets a plant to alive
 
 	private:
 	SDL_Rect clips[4];

@@ -124,4 +124,14 @@ int Plant::getStatus()
 	Enemy::getStatus();
 }
 
+void Plant::setX(int x) {
+	box.x = x;
+}
 
+void Plant::setY(int y) {
+	box.y = y;
+}
+
+void Plant::resetDeath() {
+	Enemy::resetDeath();
+}
