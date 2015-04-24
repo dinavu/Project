@@ -48,7 +48,8 @@ int main( int argc, char* args[] ) {
 	// declare variables
 	int marioDir;			// direction mario faces when initially using fireball
 	int lifeCount=3;		// number of lives mario has remaining
-	bool quit=false;		// quit flag
+	bool quitLevel=false;		// quits level if true
+	bool quitGame=false;		// quits game if true
 	int time;			// current time from timer
 	bool isJumped;			// determine if mario is jumping or not
 	SDL_Event event;
@@ -97,7 +98,7 @@ int main( int argc, char* args[] ) {
 	myGraphics.runHomescreen(event);
 
 	// run the game
-	while(lifeCount>0) {
+	while((quitGame==false)&&(lifeCount>0)) {
 
 		if (myMario.isDead()==true) {
 			myMario.resetDeath();
@@ -133,11 +134,11 @@ int main( int argc, char* args[] ) {
 		}
 		SDL_Flip(myGraphics.getScreen());
 		SDL_Delay(1500);
-		quit = false;
+		quitLevel = false;
 
 	// run until death or quit
 	myGraphics.init();					// resize the game window
-	while((quit==false)/*&&(myMario.isDead()==false)*/) {	// user has not quit
+	while((quitLevel==false)&&(quitGame==false)) {		// user has not quit
      		fps.start();					// start the frame timer
 		time = SDL_GetTicks();				// microseconds that have passed 	
 
@@ -145,7 +146,7 @@ int main( int argc, char* args[] ) {
         		myMario.handle_input(event,time);	// handle events for mario
 			myFireball.handleFire(event);		// handle events for fireball
         		if(event.type==SDL_QUIT) {		// user has Xed out the window
-                		quit=true;			// quit the program
+                		quitGame=true;			// quit the program
         		}
 			else if(event.type == SDL_KEYDOWN) {
 				if(event.key.keysym.sym == SDLK_SPACE){
@@ -295,13 +296,13 @@ int main( int argc, char* args[] ) {
 		for (int i=0; i<e_num; i++ ) {
 			if (myenemies[i]->mDead(myMario.getX(),myMario.getY()) == true){
 				myMario.makeDead();
-				quit = true;
+				quitLevel = true;
 			}
 		}
 
 		//check if quit is true
 		if (myMario.isDead()==true){
-			quit = true;
+			quitLevel = true;
 			lifeCount--;
 		}
 	}
