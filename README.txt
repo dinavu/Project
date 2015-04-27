@@ -105,8 +105,12 @@ What follows is a list of known bugs present in the game:
   jump being parabolic. It is possible to free Mario from this area by
   repeatedly jumping and trying to move through the sides of the
   blocks, but it is difficult.
-
-
+- When trying to crouch, the jumping clip of Mario is displayed though
+  Mario remains stationary.
+- Occasionally Mario's death image is displayed when hitting multiple
+  buttons while trying to jump.
+- Fireball always fires right while Mario is jumping, even if Mario is
+  facing left.
 
 
 
