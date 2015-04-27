@@ -8,6 +8,7 @@ Last Updated: April 27, 2015
 
 
 ====== THE PROJECT: Super Mario Bros ======
+
 This program is a recreation of the original Super Mario Bros game.
 The goal of the project was to create a version of this traditional,
 2-D scrolling game. The game is composed of the first level of the
@@ -19,6 +20,7 @@ found on Dina Vu's github - https://github.com/dinavu/Project
 
 
 ====== INSTALLING AND RUNNING THE GAME ======
+
 To run the program and play Super Mario Bros on your computer, you must
 first download this game and compile it appropriately. Go to the GitHub
 Repository link included above and clone the project.
@@ -37,6 +39,7 @@ no libraries outside of SDL1 were used.
 
 
 ====== GAMEPLAY ======
+
 The game opens in a title screen where the user can select one or two
 players through the Goomba Selector and the arrow keys. Once the desired
 gameplay is selected, simply push ENTER/RETURN to enter the first world
@@ -61,6 +64,7 @@ you safely make it to the end of the level with Mario, you win the game!
 
 
 ====== CONTROLS ======
+
 Once inside the game (past the homescreen), the goal is to reach the
 end of the level without dying. These are the controls:
 	- Arrow Keys:
@@ -75,6 +79,7 @@ end of the level without dying. These are the controls:
 
 
 ====== DOCUMENTATION ======
+
 The link provided for the GitHub Repository includes the most up-to-date
 version of this game. It is in that location that all the changes and
 updates of the game were made. A history of commits can be found within
@@ -85,6 +90,7 @@ https://docs.google.com/document/d/1PLDvAwGydSXTyPNbGjX854IBhLAibcGoJ74npbypmEE/
 
 
 ====== BUGS ======
+
 What follows is a list of known bugs present in the game:
 
 - Game title screen allows to chose one or two players but gameplay
