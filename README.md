@@ -79,6 +79,7 @@ end of the level without dying. These are the controls:
 
 
 ====== DOCUMENTATION ======
+
 The link provided for the GitHub Repository includes the most up-to-date
 version of this game. It is in that location that all the changes and
 updates of the game were made. A history of commits can be found within
