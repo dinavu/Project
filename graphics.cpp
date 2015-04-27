@@ -100,7 +100,8 @@ bool Graphics::load_files() {
 	goomba = load_image("images/goomba.png");			// goomba enemy clips
 	koopa = load_image("images/koopa2.png");			// koopa enemy clips
 	plant = load_image("images/plant.png");				// plant enemy clips
-	font = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);		// beginning of level font
+	inGamefont = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);	// pre/mid level font
+	endFont = TTF_OpenFont("fonts/journal.ttf", 72);		// end level font
 
 	// if there was a problem in loading the dot
 	if(mario==NULL) {
@@ -128,22 +129,27 @@ bool Graphics::load_files() {
 	}
 
 	// problem loading goomba enemy
-	if(goomba == NULL) {
+	if (goomba == NULL) {
 		return false;
 	}
 
 	// problem loading koopa enemy
-	if(koopa == NULL) {
+	if (koopa == NULL) {
 		return false;
 	}
 	
 	// problem loading plant enemy
-	if(plant == NULL) {
+	if (plant == NULL) {
 		return false;
 	}
 
-	// problem loading 
-	if(font == NULL) {
+	// problem loading inGamefont
+	if (inGamefont == NULL) {
+		return false;
+	}
+
+	// problem loading endFont
+	if (endFont == NULL) {
 		return false;
 	}
 
@@ -286,5 +292,5 @@ int Graphics::runHomescreen(SDL_Event event) {
 
 // reset the screen
 SDL_Rect Graphics::clearScreenB(SDL_Surface* screen) {
-	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 0xFF, 0xFF, 0xFF));
+	SDL_FillRect(screen, &screen->clip_rect, SDL_MapRGB(screen->format, 0, 0, 0));
 }

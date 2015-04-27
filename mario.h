@@ -30,6 +30,8 @@ public:
 	SDL_Rect *getLclip();			// return mario's left motion clip
 	SDL_Rect *getCclip();			// return mario's crouch clip
 	SDL_Rect *getJclip();			// return mario's jumping clip
+	SDL_Rect *getOclip();			// returns a clip of mario for prelevel screen
+	SDL_Rect *getFPclip();			// return mario's sliding on the flagpole clip
 	int getCamerax();			// return camera's x coordinate
 	int getCameray();			// return camera's y coordinate
 	bool getisJumped();			// return whether mario is jumping or not
@@ -37,11 +39,10 @@ public:
 	void checkPipeCollision();		// checks if mario has collided with a pipe
 	void createFloors();			// create floor boundaries
 	void createBoxes();			// create box/brick boundaries
-	bool check_collision(SDL_Rect, SDL_Rect);	// sets the true/false value for collision
+	bool check_collision(SDL_Rect, SDL_Rect);// sets the true/false value for collision
 	void checkCollisionsHor();		// checks for a horizontal collision
 	void checkCollisionsVer();		// checks for a vertical collision
 	bool isDead();				// checks if mario was killed
-	SDL_Rect *getOclip();			// returns a clip of mario for prelevel screen
 	void resetDeath();			// sets the value of mario's death to false
 	void makeDead();			// sets the value of mario's death to true
 	void setX();				// resets mario's x coordinate

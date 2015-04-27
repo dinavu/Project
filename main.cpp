@@ -50,6 +50,7 @@ int main( int argc, char* args[] ) {
 	int lifeCount=3;		// number of lives mario has remaining
 	bool quitLevel=false;		// quits level if true
 	bool quitGame=false;		// quits game if true
+	bool win=false;			// displays victory screen if true
 	int time;			// current time from timer
 	bool isJumped;			// determine if mario is jumping or not
 	SDL_Event event;
@@ -73,17 +74,25 @@ int main( int argc, char* args[] ) {
 	plant = myGraphics.load_image("images/plant.png");
 
 	// fonts
-	TTF_Font *font;
+	TTF_Font *inGamefont;
+	TTF_Font *endFont;
 	SDL_Color textColor = {255, 255, 255};
+	SDL_Color winColor = {0, 255, 0};
+	SDL_Color loseColor = {255, 0, 0};
 	SDL_Surface *preLevel = NULL;
 	SDL_Surface *lifetext1 = NULL;
 	SDL_Surface *lifetext2 = NULL;
 	SDL_Surface *lifetext3 = NULL;
-	font = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);
-	preLevel = TTF_RenderText_Solid( font, "World 1-1", textColor );
-	lifetext1 = TTF_RenderText_Solid( font, " x  3", textColor );
-	lifetext2 = TTF_RenderText_Solid( font, " x  2", textColor );
-	lifetext3 = TTF_RenderText_Solid( font, " x  1", textColor );
+	SDL_Surface *victoryText = NULL;
+	SDL_Surface *gameOverText = NULL;
+	inGamefont = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);
+	endFont = TTF_OpenFont("fonts/journal.ttf", 72);
+	preLevel = TTF_RenderText_Solid( inGamefont, "World 1-1", textColor );
+	lifetext1 = TTF_RenderText_Solid( inGamefont, " x  3", textColor );
+	lifetext2 = TTF_RenderText_Solid( inGamefont, " x  2", textColor );
+	lifetext3 = TTF_RenderText_Solid( inGamefont, " x  1", textColor );
+	victoryText = TTF_RenderText_Solid( endFont, "You Win!", winColor );
+	gameOverText = TTF_RenderText_Solid( endFont, "Game Over!", loseColor );
 
 	// set image clips
 	myMario.set_clips();		// sets the mario images
@@ -138,7 +147,7 @@ int main( int argc, char* args[] ) {
 
 	// run until death or quit
 	myGraphics.init();					// resize the game window
-	while((quitLevel==false)&&(quitGame==false)) {		// user has not quit
+	while((quitLevel==false)&&(quitGame==false)&&(win==false)) {// user has not quit
      		fps.start();					// start the frame timer
 		time = SDL_GetTicks();				// microseconds that have passed 	
 
@@ -292,12 +301,24 @@ int main( int argc, char* args[] ) {
         		SDL_Delay((1000/20)-fps.get_ticks());
     		}
 
-		//check if mario has collided with enemies
+		// check if mario has collided with enemies
 		for (int i=0; i<e_num; i++ ) {
 			if (myenemies[i]->mDead(myMario.getX(),myMario.getY()) == true){
 				myMario.makeDead();
 				quitLevel = true;
 			}
+		}
+
+		// check if mario has reached the end
+		if (myMario.getX()>3160) {
+			myGraphics.clearScreen(myGraphics.getScreen());
+        		myGraphics.apply_surface(0, 0, background, myGraphics.getScreen(), myMario.getCamera());
+			myGraphics.apply_surface(myMario.getX()-myMario.getCamerax(), myMario.getY(), mario, myGraphics.getScreen(), myMario.getFPclip());
+			win = true;
+			quitGame = true;
+			quitLevel = true;
+			SDL_Flip(myGraphics.getScreen());
+			SDL_Delay(1000);
 		}
 
 		//check if quit is true
@@ -308,6 +329,23 @@ int main( int argc, char* args[] ) {
 	}
 
 	}
+
+	// victory screen
+	if (win == true) {
+		myGraphics.clearScreenB(myGraphics.getScreen());
+		myGraphics.apply_surface(240, 80, victoryText, myGraphics.getScreen(), NULL);
+		SDL_Flip(myGraphics.getScreen());
+		SDL_Delay(2000);
+	}
+
+	if (win == false) {
+		myGraphics.clearScreenB(myGraphics.getScreen());
+		myGraphics.apply_surface(210, 90, gameOverText, myGraphics.getScreen(), NULL);
+		SDL_Flip(myGraphics.getScreen());
+		SDL_Delay(2000);
+	}
+	
+
 
 	SDL_FreeSurface(mario);
 	SDL_FreeSurface(background);
@@ -322,7 +360,8 @@ int main( int argc, char* args[] ) {
 	SDL_FreeSurface(lifetext2);
 	SDL_FreeSurface(lifetext3);
 
-	TTF_CloseFont(font);
+	TTF_CloseFont(inGamefont);
+	TTF_CloseFont(endFont);
 	TTF_Quit();
 
 	return 0;

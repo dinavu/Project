@@ -165,6 +165,16 @@ void Mario::set_clips() {
 	clipsJump[1].y=32*2;
 	clipsJump[1].w=16;
 	clipsJump[1].h=32;
+
+	clipsFP[0].x=16*4;
+	clipsFP[0].y=0;
+	clipsFP[0].w=16;
+	clipsFP[0].h=32;
+
+	clipsD[0].x=16*3;
+	clipsD[0].y=32*2;
+	clipsD[0].w=16;
+	clipsD[0].h=32;
 }
 
 // update mario's velocity to move
@@ -398,6 +408,11 @@ SDL_Rect *Mario::getCclip() {
 // get jumping clip
 SDL_Rect *Mario::getJclip() {
 	return &clipsJump[getFrame()];
+}
+
+// get flagpole sliding clip
+SDL_Rect *Mario::getFPclip() {
+	return &clipsFP[0];
 }
 
 // return prelevel mario image

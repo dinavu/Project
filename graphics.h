@@ -52,12 +52,17 @@ protected:
 	SDL_Rect clipsLeft[4];			// images for mario moving left
 	SDL_Rect clipsStill[1];			// image for mario crouching
 	SDL_Rect clipsJump[1];			// image for mario jumping
+	SDL_Rect clipsD[1];			// image for mario's death
+	SDL_Rect clipsFP[1];			// images for mario on flagpole
 	SDL_Rect clipsfireR[4];			// images for fireball moving right
 	SDL_Rect clipsfireL[4];			// images for fireball moving left
 	SDL_Event event;
-	TTF_Font *font;				// game text font
+	TTF_Font *inGamefont;			// pre and mid level text font
+	TTF_Font *endFont;			// font for end game
 	SDL_Surface *prelevel;			// states level and life count
-	SDL_Color textColor;
+	SDL_Color textColor;			// text color for pre and mid level text
+	SDL_Color winColor;			// victory text color
+	SDL_Color loseColor;			// game over text color
 };
 
 #endif
