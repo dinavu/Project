@@ -323,6 +323,11 @@ int main( int argc, char* args[] ) {
 
 		//check if quit is true
 		if (myMario.isDead()==true){
+			myGraphics.clearScreen(myGraphics.getScreen());
+        		myGraphics.apply_surface(0, 0, background, myGraphics.getScreen(), myMario.getCamera());
+			myGraphics.apply_surface(myMario.getX()-myMario.getCamerax(), myMario.getY(), mario, myGraphics.getScreen(), myMario.getDclip());
+			SDL_Flip(myGraphics.getScreen());
+			SDL_Delay(1000);
 			quitLevel = true;
 			lifeCount--;
 		}
@@ -338,6 +343,7 @@ int main( int argc, char* args[] ) {
 		SDL_Delay(2000);
 	}
 
+	// game over screen
 	if (win == false) {
 		myGraphics.clearScreenB(myGraphics.getScreen());
 		myGraphics.apply_surface(210, 90, gameOverText, myGraphics.getScreen(), NULL);
@@ -359,6 +365,8 @@ int main( int argc, char* args[] ) {
 	SDL_FreeSurface(lifetext1);
 	SDL_FreeSurface(lifetext2);
 	SDL_FreeSurface(lifetext3);
+	SDL_FreeSurface(victoryText);
+	SDL_FreeSurface(gameOverText);
 
 	TTF_CloseFont(inGamefont);
 	TTF_CloseFont(endFont);

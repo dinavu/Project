@@ -420,6 +420,11 @@ SDL_Rect *Mario::getOclip() {
 	return &clipsRight[0];
 }
 
+// return Mario's death clip
+SDL_Rect *Mario::getDclip() {
+	return &clipsD[0];
+}
+
 // get camera's x coordinate
 int Mario::getCamerax() {
 	return camera.x;

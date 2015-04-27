@@ -32,6 +32,7 @@ public:
 	SDL_Rect *getJclip();			// return mario's jumping clip
 	SDL_Rect *getOclip();			// returns a clip of mario for prelevel screen
 	SDL_Rect *getFPclip();			// return mario's sliding on the flagpole clip
+	SDL_Rect *getDclip();			// returns mario's death clip
 	int getCamerax();			// return camera's x coordinate
 	int getCameray();			// return camera's y coordinate
 	bool getisJumped();			// return whether mario is jumping or not
