@@ -29,7 +29,8 @@ public:
 	bool getIsFire();		// return truth value of isFire
 	void checkDeath(int, int, int, int, bool);		// Checks if fireball collides with anything
 	void countup();			// increase fireballcount
-	int getCount();
+	int getCount();			// returns number of fireballs fired
+	void resetIsFire();		// resets isFire to false
 
 private:
 	int fireX, fireY;		// x and y offsets of the fireball

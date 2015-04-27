@@ -113,6 +113,7 @@ int main( int argc, char* args[] ) {
 			myMario.resetDeath();
 			myMario.setX();
 			myMario.setY();
+			myFireball.resetIsFire();
 			Goomba1.setX(500);
 			Goomba1.setY(168);	
 			Goomba2.setX(550);

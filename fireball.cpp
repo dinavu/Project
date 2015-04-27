@@ -190,18 +190,27 @@ bool Fireball::getIsFire() {
 	return isFire;
 }
 
+// returns the width of fireball sprite
 int Fireball::getFireW() {
 	return fireW;
 }
 
+// returns the height of fireball sprite
 int Fireball::getFireH() {
 	return fireH;
 }
 
+// returns the number of fireballs fired
 int Fireball::getCount() {
 	return fireballcount;
 }
 
+// increments the fireball count
 void Fireball::countup() {
 	fireballcount++;
+}
+
+// resets isFire to false
+void Fireball::resetIsFire() {
+	isFire = false;
 }
