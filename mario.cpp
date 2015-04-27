@@ -69,7 +69,7 @@ void Mario::handle_input(SDL_Event event, int time) {
 					status=0;
 				}
 				break;
-			case SDLK_x:		// jump
+			case SDLK_UP:		// jump
 				if (isJumped==false) {
 					initialT = time;
 					jumpDir = getStatus();
@@ -92,12 +92,12 @@ void Mario::handle_input(SDL_Event event, int time) {
         	switch( event.key.keysym.sym ) {
             		case SDLK_LEFT:		// move left
 				if (isJumped==false) {
-					xVel = 0;//-getWidth() / 5;
+					xVel = 0;
 				}
 				break;
            		case SDLK_RIGHT:	// move right
 				if (isJumped==false) {
-					xVel = 0;//getWidth() / 5;
+					xVel = 0;
 				}
 				break;
 	   		case SDLK_DOWN:		// crouch
@@ -209,7 +209,6 @@ void Mario::move() {
 	marioRect.x=x;
 	marioRect.y=y;
 
-//	cout << "Mario Y: " << y << endl;
 }
 
 // make Mario do a full jump
@@ -650,8 +649,6 @@ bool Mario::check_collision( SDL_Rect A, SDL_Rect B ) {
     topB = B.y;
     bottomB = B.y + B.h;
 
-	//cout << "bottomA:" << bottomA << " topB:" << topB << " topA:" << topA << " bottomB:" << bottomB << endl;
-	//cout << "leftA:" << leftA << " leftB:" << leftB << " rightB:" << rightB << endl;;
     //If any of the sides from A are outside of B
 	//check horizontal
 	if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
@@ -680,11 +677,6 @@ void Mario::checkCollisionsHor() {
 
 // checks for a vertical collision
 void Mario::checkCollisionsVer() {
-
-	//Going out the top of the screen
-	if (y<0){
-		y -= yVel;
-	}
 
 	//Floor (UP / DOWN)
 	for ( int z = 0 ; z < floor.size() ; z++ ) {
