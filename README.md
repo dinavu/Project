@@ -96,26 +96,20 @@ What follows is a list of known bugs present in the game:
 
 - Game title screen allows to chose one or two players but gameplay
   is the same regardless.
-- Some pipe collisions prevent the user from walking off the left side.
 - Sometimes the hit box for a plant reports a hit but the plant does
   not die.
-- Ending a jump prematurely can result in jumping higher and further
-  the next time Mario jumps
-- Jumping collision can result in Mario temporarily going into the
-  level's floor or the blocks he is standing on. Jumping again can
-  help free Mario from the inside of the block or floor.
+- Mario jumping left results in displaying the right jump sprite.
 - While jumping, sometimes side collisions are not immediately
   immediately detected and Mario might pass through part of an object
   such as pipe or block.
 - Part of the level has a narrow space between two triangular block
   sections and it is possible for Mario to be trapped there due to the
-  jump being parabolic. It is possible to free Mario from this area by
-  repeatedly jumping and trying to move through the sides of the
-  blocks, but it is difficult.
-- When trying to crouch, the jumping clip of Mario is displayed though
-  Mario remains stationary.
-- Occasionally Mario's death image is displayed when hitting multiple
-  buttons while trying to jump.
+  jump being parabolic.
 - Fireball always fires right while Mario is jumping, even if Mario is
   facing left.
+- From Mario's starting position if Mario walks left, he will fall into
+  the ground
+- When mario is ontop of a pipe and walks left, he drops down to a 
+  middle layer first before falling to the ground.
+
 

@@ -44,6 +44,7 @@ Mario::Mario() {
 // adjust mario's velocity based on key pressed
 void Mario::handle_input(SDL_Event event, int time) {
 
+if (isJumped==false || (y+marioHeight)==200){
 	// if a key was pressed
 	if( event.type == SDL_KEYDOWN ) {
         	// adjust the velocity
@@ -59,15 +60,6 @@ void Mario::handle_input(SDL_Event event, int time) {
 				if (isJumped==false) {
 					xVel = getWidth() /5;
 				} 
-				break;
-			case SDLK_DOWN:		// crouch
-				isCrouched = true;
-				xVel = 0;
-				status = 2;
-				if (isJumped==true) {
-					isJumped=false;
-					status=0;
-				}
 				break;
 			case SDLK_UP:		// jump
 				if (isJumped==false) {
@@ -100,12 +92,9 @@ void Mario::handle_input(SDL_Event event, int time) {
 					xVel = 0;
 				}
 				break;
-	   		case SDLK_DOWN:		// crouch
-				isCrouched = false;
-				status = 0;	
-				break;
         	}
 	}
+}
 
 }
 
@@ -200,16 +189,11 @@ void Mario::move() {
 		y += getHeight() /8;	// move mario up or down
 	}
 
-	// if mario went too far up or down
-	if((y < 0 ) || (getY() + getHeight() > 224)) {
-		y -= getHeight() /8;		// move back
-	}
-
 	while ( (y>=136) && (y<=152)  /*&& (isJumped==false)*/ ) {
 		//y=200;
 		y += getHeight() /8;
-		cout << y << endl;
-	} 
+		//cout << y << endl;
+	} 	
 
 	collision = 0;
 	floorcollision = 0;
@@ -283,16 +267,16 @@ void Mario::jump(int time) {
 
 // display mario's update position
 void Mario::updateStatus() {
-	if (isCrouched==true) {		// display crouching mario
-		status=2;
-	}
-	else if (isJumped==true) {	// display jumping mario
+	//if (isCrouched==true) {		// display crouching mario
+	//	status=2;
+	//}
+	if (isJumped==true) {	// display jumping mario
 		status=3;
 		if (jumpDir==0) {
 			frame=0;
 		}
 		else if (jumpDir==1) {
-			frame=1;
+			frame=0;
 		}
 
 	}
@@ -494,18 +478,25 @@ void Mario::checkPipeCollision() {
 		bottomB = pipes[i].y + pipes[i].h;
 	
 	    	//If any of the sides from A are outside of B
-		if (bottomA>=topB && topA<topB && leftA>=leftB && leftA<=rightB){
+		if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
 			y = pipes[i].y - marioHeight;
 			boxcollision = 1;
+			//cout << "1" << endl;
+		} else if (topA<=bottomB && topA>topB && leftA>leftB && rightA<rightB){
+			y = pipes[i].y - marioHeight;
+			boxcollision = 1;
+			collision = 1;
+			//cout << "2" << endl;
 		//check vertical
-		} else if (rightA>=leftB && leftA<leftB && bottomA>=topB && topA<=bottomB){
+		} else if (rightA>=leftB && leftA<leftB && topA>topB && topA<=bottomB){
 			x -= 2*xVel;
 			collision = 1;
-			boxcollision = 1;
-		} else if (leftA<=rightB && rightA>rightB && bottomA>=topB && topA<=bottomB){	
+			//cout << "3" << endl;
+		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
 			x -= 2*xVel;
 			collision = 1;
-			boxcollision = 1;
+			//cout << "4" << endl;
+		//if no collision return false
 		} 
 	} 
 }
@@ -718,7 +709,7 @@ void Mario::checkCollisionsVer() {
 	}
 
 	//Check for marios death
-	if (y >= 224 ) {
+	if ((y+marioHeight) >= 224 ) {
 		death = true;
 	}
 }
