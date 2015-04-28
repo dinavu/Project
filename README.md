@@ -108,8 +108,10 @@ What follows is a list of known bugs present in the game:
 - Fireball always fires right while Mario is jumping, even if Mario is
   facing left.
 - From Mario's starting position if Mario walks left, he will fall into
-  the ground
-- When mario is ontop of a pipe and walks left, he drops down to a 
+  the ground.
+- When Mario is ontop of a pipe and walks left, he drops down to a 
   middle layer first before falling to the ground.
+- When Mario dies while jumping level restarts with him jumping, rather
+  than being still.
 
 
