@@ -155,27 +155,31 @@ int Koopa::getHeight() // returns enemies height
 	Enemy::getHeight();
 }
 
-int Koopa::getStatus() 
+int Koopa::getStatus() //returns koopas status
 {
 	Enemy::getStatus();
 }
 
-void Koopa::setXmax(int max) {
+void Koopa::setXmax(int max) { //sets koopas xmax
 	xmax = max;
 }
 
-void Koopa::setXmin(int min) {
+void Koopa::setXmin(int min) { //sets koopas xmin
 	xmin = min;
 }
 
-void Koopa::setX(int x) {
+void Koopa::setX(int x) { //sets koopas x
 	box.x = x;
 }
 
-void Koopa::setY(int y) {
+void Koopa::setY(int y) { //sets koopas y
 	box.y = y;
 }
 
-void Koopa::resetDeath() {
+void Koopa::resetDeath() { //reset koopa after dying
 	Enemy::resetDeath();
+}
+
+void Koopa::kill(){
+	Enemy::kill();
 }

@@ -27,26 +27,46 @@ int main( int argc, char* args[] ) {
 	Timer fps;						// frame rate regulator
 
 	// instantiate enemies
-	vector < Enemy* > myenemies(4);		//Create a vector of enemies
+	vector < Enemy* > myenemies(15);		//Create a vector of enemies
 
 	// Number of fireballs used
 	int fireballcount = 0;
 
-	Goomba Goomba1(500, 168);	
-	Goomba Goomba2(550, 168);
+	Goomba Goomba1(500, 200);	
+	Goomba Goomba2(550, 200);
+	Goomba Goomba3(350, 112);
+	Goomba Goomba4(2220, 168);
 	Koopa Koopa1(350, 100, 300, 375);
 	Plant Plant1(451, 142);
+	Koopa Koopa2(1200,163.5,1135,1326);
+	Koopa Koopa3(1300,35.5,1280,1369);
+	Goomba Goomba5(2100,-30);
+	Goomba Goomba6(2100,-70);
+	Goomba Goomba7(2100,-200);
+	Goomba Goomba8(2100,-250);
+	Goomba Goomba9(2100,-400);
+	Goomba Goomba10(2100,-450);
 	
 	// assign enemies
 	myenemies[0] = &Goomba1;
 	myenemies[1] = &Goomba2;
-	myenemies[2] = &Koopa1;
-	myenemies[3] = &Plant1;
+	myenemies[2] = &Goomba3;
+	myenemies[3] = &Goomba4;
+	myenemies[4] = &Goomba5;
+	myenemies[5] = &Goomba6;
+	myenemies[6] = &Goomba7;
+	myenemies[7] = &Goomba8;
+	myenemies[8] = &Goomba9;
+	myenemies[9] = &Goomba10;
+	myenemies[10] = &Koopa1;
+	myenemies[11] = &Koopa2;
+	myenemies[12] = &Koopa3;
+	myenemies[13] = &Plant1;
 
 	int startTime = SDL_GetTicks();		// initial time
 
 	//Number of enemies
-	int e_num = 4;
+	int e_num = 14;
 
 	// declare variables
 	int marioDir;			// direction mario faces when initially using fireball
@@ -121,16 +141,21 @@ int main( int argc, char* args[] ) {
 			myMario.setX();
 			myMario.setY();
 			myFireball.resetIsFire();
-			Goomba1.setX(500);
-			Goomba1.setY(168);	
-			Goomba2.setX(550);
-			Goomba2.setY(168);
-			Koopa1.setX(350);
-			Koopa1.setY(100);
-			Koopa1.setXmin(300);
-			Koopa1.setXmax(375);
-			Plant1.setX(451);
-			Plant1.setY(142);
+
+			Goomba1.setX(500); Goomba1.setY(168);	
+			Goomba2.setX(550); Goomba2.setY(168);
+			Goomba3.setX(350); Goomba3.setY(112);
+			Goomba4.setX(2221); Goomba4.setY(168);
+			Goomba5.setX(2100); Goomba5.setY(-30);
+			Goomba6.setX(2100); Goomba6.setY(-70);
+			Goomba7.setX(2100); Goomba7.setY(-200);
+			Goomba8.setX(2100); Goomba8.setY(-250);
+			Goomba9.setX(2100); Goomba9.setY(-400);
+			Goomba10.setX(2100); Goomba10.setY(-450);
+			Koopa1.setX(350); Koopa1.setY(100); Koopa1.setXmin(300); Koopa1.setXmax(375);
+			Koopa2.setX(1200); Koopa2.setY(163.5); Koopa2.setXmin(1135); Koopa2.setXmax(1326);
+			Koopa3.setX(1300); Koopa3.setY(35.5); Koopa3.setXmin(1280); Koopa3.setXmax(1369);
+			Plant1.setX(451); Plant1.setY(142);
 			for (int a=0; a<e_num; a++ ) {
 				myenemies[a]->resetDeath();
 			}
@@ -199,12 +224,17 @@ int main( int argc, char* args[] ) {
         	myMario.set_camera();	// set the camera centered on mario
 		
 		//move enemies
-		for (int i=0; i<e_num; i++ ) {		
+		for (int i=0; i<e_num; i++ ) {	
 			myenemies[i]->move();
 		}
 		
-		for (int j=0; j<e_num; j++){			
-			myFireball.checkDeath(myenemies[j]->getX(),myenemies[j]->getY(),myenemies[j]->getWidth(),myenemies[j]->getHeight(), myenemies[j]->isDead());
+		for (int j=0; j<e_num; j++){
+			int killenemy = 0;
+			killenemy = myFireball.checkDeath(myenemies[j]->getX(),myenemies[j]->getY(),myenemies[j]->getWidth(),myenemies[j]->getHeight(), myenemies[j]->isDead());
+			if (killenemy==1){
+				//cout << "kill" << j << endl;
+				myenemies[j]->kill();
+			}
 		}
 
 		if (myFireball.getIsFire()){
@@ -280,26 +310,26 @@ int main( int argc, char* args[] ) {
 		}
 
 		//Move goomba left
-		if (myenemies[0]->isDead() == false){
-			myGraphics.apply_surface(myenemies[0]->getX()-myMario.getCamerax(),myGraphics.getHeight()-myenemies[0]->getHeight()-24, goomba, myGraphics.getScreen(), myenemies[0]->getLclip());
-		}
-			
-		if (myenemies[1]->isDead() == false){
-			myGraphics.apply_surface(myenemies[1]->getX()-myMario.getCamerax(),myGraphics.getHeight()-myenemies[1]->getHeight()-24, goomba, myGraphics.getScreen(), myenemies[1]->getLclip());
+		for (int j=0; j<=9; j++){
+			if (myenemies[j]->isDead() == false){
+				myGraphics.apply_surface(myenemies[j]->getX()-myMario.getCamerax(),myenemies[j]->getY(), goomba, myGraphics.getScreen(), myenemies[j]->getLclip());
+			}
 		}
 
 		//Move plant
-		if (myenemies[3]->isDead() == false){
-			myGraphics.apply_surface(myenemies[3]->getX()-myMario.getCamerax(),myenemies[3]->getY(), plant, myGraphics.getScreen(), myenemies[3]->getLclip());
+		if (myenemies[13]->isDead() == false){
+			myGraphics.apply_surface(myenemies[13]->getX()-myMario.getCamerax(),myenemies[13]->getY(), plant, myGraphics.getScreen(), myenemies[13]->getLclip());
 		}
 
 		//Move Koopa left or right
-		if (myenemies[2]->isDead() == false){
-			if(myenemies[2]->getStatus()==0) { //move right
-				myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(), myenemies[2]->getRclip());
-			}
-			if (myenemies[2]->getStatus()==1) { //move left
-				myGraphics.apply_surface(myenemies[2]->getX()-myMario.getCamerax(),myenemies[2]->getY(), koopa, myGraphics.getScreen(), myenemies[2]->getLclip());
+		for (int k=10; k<=12; k++){
+			if (myenemies[k]->isDead() == false){
+				if(myenemies[k]->getStatus()==0) { //move right
+					myGraphics.apply_surface(myenemies[k]->getX()-myMario.getCamerax(),myenemies[k]->getY(), koopa, myGraphics.getScreen(), myenemies[k]->getRclip());
+				}
+				if (myenemies[k]->getStatus()==1) { //move left
+					myGraphics.apply_surface(myenemies[k]->getX()-myMario.getCamerax(),myenemies[k]->getY(), koopa, myGraphics.getScreen(), myenemies[k]->getLclip());
+				}
 			}
 		}
 
@@ -350,6 +380,7 @@ int main( int argc, char* args[] ) {
 			SDL_Flip(myGraphics.getScreen());
 			SDL_Delay(1000);
 			quitLevel = true;
+			myMario.reset(false);
 			lifeCount--;
 		}
 	}

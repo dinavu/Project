@@ -119,19 +119,23 @@ int Plant::getHeight() // returns enemies height
 	Enemy::getHeight();
 }
 
-int Plant::getStatus() 
+int Plant::getStatus() //return status of plant
 {
 	Enemy::getStatus();
 }
 
-void Plant::setX(int x) {
+void Plant::setX(int x) { //return plants x
 	box.x = x;
 }
 
-void Plant::setY(int y) {
+void Plant::setY(int y) { //return plants y
 	box.y = y;
 }
 
-void Plant::resetDeath() {
+void Plant::resetDeath() { //resets death
 	Enemy::resetDeath();
+}
+
+void Plant::kill() {
+	Enemy::kill();
 }

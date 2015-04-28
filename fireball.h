@@ -27,7 +27,7 @@ public:
 	SDL_Rect *getFireR();		// return fireball's right motion clip
 	SDL_Rect *getFireL();		// return fireball's left motion clip
 	bool getIsFire();		// return truth value of isFire
-	void checkDeath(int, int, int, int, bool);		// Checks if fireball collides with anything
+	int checkDeath(int, int, int, int, bool);// Checks if fireball collides with anything. return 1 when enemy enemy should die
 	void countup();			// increase fireballcount
 	int getCount();			// returns number of fireballs fired
 	void resetIsFire();		// resets isFire to false

@@ -4,6 +4,7 @@
 #define GOOMBA_H
 
 #include "enemy.h"
+#include <vector>
 using namespace std;
 
 class Goomba: public Enemy
@@ -25,10 +26,18 @@ class Goomba: public Enemy
 	void virtual setX(int);		// sets the x coordinate of the goomba
 	void virtual setY(int);		// sets the y coordinate of the goomba
 	void virtual resetDeath();	// resets the enemy to alive
+	void virtual kill();		// kills goomba
+	bool check_collision(SDL_Rect,SDL_Rect);//checks if Goomba has collided with an object
+	void checkCollisionsVer();	// checks Goombas vertical collisions
+	void createFloors();		// intializes vector of floors
+	void createBoxes();		// intializes vector of boxes
 
 	private:
 	SDL_Rect clipsLeft[8];		//Goomba's left moving clips
 	SDL_Rect clipsDeath[4];		//Goomba's death clips
+	int floorcollision,boxcollision;//variables indicating floor and box collisions
+	vector <SDL_Rect> floor;	// vector of the floor coordinates
+	vector <SDL_Rect> boxes;	// vector of the boxes coordinates
 };
 
 #endif

@@ -25,6 +25,7 @@ class Plant: public Enemy
 	void virtual setX(int);		// sets the x coordinate of the plant
 	void virtual setY(int);		// sets the y coordinate of the plant
 	void virtual resetDeath();	// resets a plant to alive
+	void virtual kill();		// kills plant
 
 	private:
 	SDL_Rect clips[4];

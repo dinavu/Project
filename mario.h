@@ -36,6 +36,7 @@ public:
 	int getCamerax();			// return camera's x coordinate
 	int getCameray();			// return camera's y coordinate
 	bool getisJumped();			// return whether mario is jumping or not
+	void reset(bool);		// reset marios isJumped,xVel and yVel
 	void setPipes();			// set pipe coordinates
 	void checkPipeCollision();		// checks if mario has collided with a pipe
 	void createFloors();			// create floor boundaries

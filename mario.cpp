@@ -728,3 +728,12 @@ void Mario::resetDeath() {
 void Mario::makeDead() {
 	death = true;
 }
+
+// function to reset mario after dying
+void Mario::reset(bool truth){
+	xVel = 0;
+	yVel = 0;
+	frame = 0;
+	status = 0;
+	isJumped = truth;
+}

@@ -27,6 +27,7 @@ class Enemy : public Graphics
 	void virtual setX(int);		// sets enemy x coordinate
 	void virtual setY(int);		// sets enemy y coordinate
 	void virtual resetDeath();	// resets all the enemies to alive
+	void virtual kill();		//kills the enemy
 
 	protected:
 	int xVel,yVel; 			//Its rate of movement
@@ -35,6 +36,7 @@ class Enemy : public Graphics
 	int enemy_height, enemy_width;	//enemy width and height
 	SDL_Rect box;			//dimensions of enemy
 	bool death;			//true if the enemy is dead
+	bool firedeath;			//true when killed by fireball
 };
 
 #endif

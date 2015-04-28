@@ -16,20 +16,6 @@ void Enemy::move()
 {
     	//Move left or right
    	 box.x += xVel;
-
-    	//Keep enemy in bounds
-    	if( ( box.x < 0 ) || ( box.x + enemy_width > screenWidth) )
-    	{
-    		box.x -= xVel;
-    	}
-
-	//move up or down
-	box.y += yVel;
-
-	//Keep enemy in bounds
-	if( (box.y < 0) || ( box.y + enemy_height > screenHeight ) ) {
-		box.y -= yVel;
-	}
 }
 
 void Enemy::update()
@@ -72,10 +58,9 @@ void Enemy::checkDeath(int marioy,int mariox,int firex,int firey,int firew,int f
 		}
 	}
 	//set death to true if enemy is hit by fireball
-	if (collision == 1){
+	if (collision == 1 || firedeath == true){
 		death = true;
 	}
-
 }
 
 bool Enemy::mDead(int mariox,int marioy){
@@ -94,9 +79,9 @@ bool Enemy::mDead(int mariox,int marioy){
 	//check collisions
 
 	if( death == false){
-		if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
+		if (rightA>=leftB && rightA<rightB && bottomA==bottomB && bottomA>=topB){
 			collision = 1;
-		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){
+		} else if (leftA<=rightB && rightA>rightB && bottomA==bottomB && bottomA>=topB){
 			collision = 1;
 		}
 
@@ -139,19 +124,23 @@ int Enemy::getHeight() // returns enemies height
 	return enemy_height;
 }
 
-int Enemy::getStatus()
+int Enemy::getStatus() //returns enemy status
 {
 	return status;
 }
 
-void Enemy::setX(int x) {
+void Enemy::setX(int x) { //sets the x coordinate of enemy
 	box.x = x;
 }
 
-void Enemy::setY(int y)	 {
+void Enemy::setY(int y)	 { //sets y coordinate of enemy
 	box.y = y;
 }
 
-void Enemy::resetDeath() {
+void Enemy::resetDeath() { //reset enemy after death
 	death = false;
+}
+
+void Enemy::kill() {
+	firedeath = true;
 }

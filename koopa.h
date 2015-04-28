@@ -28,6 +28,7 @@ class Koopa: public Enemy
 	void virtual setX(int);		// sets the x coordinate of the koopa
 	void virtual setY(int);		// sets the y coordinate of the koopa
 	void virtual resetDeath();	// resets a koopa to alive
+	void virtual kill();		// kills koopa
 
 	private:
 	SDL_Rect clipsLeft[4];		//Koopas left moving clips

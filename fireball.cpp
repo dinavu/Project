@@ -99,20 +99,20 @@ void Fireball::moveFire(int marioDirection) {
 	}
 }
 
-void Fireball::checkDeath(int enemyX, int enemyY, int enemyW, int enemyH, bool enemydead){
+int Fireball::checkDeath(int enemyX, int enemyY, int enemyW, int enemyH, bool enemydead){
 	//set collision equal to zero initially
 	int collision = 0;
-	//set variables
-	int leftA = fireX;
-    	int rightA = fireX + fireW;
-    	int topA = fireY;
-    	int bottomA = fireY + fireH;
-	int leftB = enemyX;
-    	int rightB = enemyX + enemyW;
-    	int topB = enemyY;
-    	int bottomB = enemyY + enemyH;
+
+	int leftA = enemyX;
+    	int rightA = enemyX + enemyH;
+    	int topA = enemyY;
+    	int bottomA = enemyY + enemyH;
+	int leftB = fireX;
+    	int rightB = fireX + fireW -10;
+    	int topB = fireY;
+    	int bottomB = fireY + fireH -70;
 	//check collisions
-	if (enemydead == false && isFire == true){
+	if(isFire==true){
 		if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
 			collision = 1;
 		} else if (topA<=bottomB && topA>topB && leftA>leftB && leftA<rightB){
@@ -123,12 +123,11 @@ void Fireball::checkDeath(int enemyX, int enemyY, int enemyW, int enemyH, bool e
 			collision = 1;
 		}
 	}
-	//set delete fireball if it hits an enemy
+	//set death to true if enemy is hit by fireball
 	if (collision == 1){
 		isFire = false;
-		cout<<"HIT"<<endl;
+		return 1;
 	}
-
 }
 
 // display the updated fireball on the screen
