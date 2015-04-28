@@ -13,6 +13,7 @@
 #include "koopa.h"
 #include "plant.h"
 #include <iostream>
+#include <sstream>
 #include <string>
 #include <vector>
 using namespace std;
@@ -42,6 +43,8 @@ int main( int argc, char* args[] ) {
 	myenemies[2] = &Koopa1;
 	myenemies[3] = &Plant1;
 
+	int startTime = SDL_GetTicks();		// initial time
+
 	//Number of enemies
 	int e_num = 4;
 
@@ -53,6 +56,7 @@ int main( int argc, char* args[] ) {
 	bool win=false;			// displays victory screen if true
 	int time;			// current time from timer
 	bool isJumped;			// determine if mario is jumping or not
+	stringstream currentTime;	// current time in seconds
 	SDL_Event event;
 
 	// images
@@ -76,7 +80,9 @@ int main( int argc, char* args[] ) {
 	// fonts
 	TTF_Font *inGamefont;
 	TTF_Font *endFont;
+	TTF_Font *secondsfont;
 	SDL_Color textColor = {255, 255, 255};
+	SDL_Color timeColor = {0, 0, 0};
 	SDL_Color winColor = {0, 255, 0};
 	SDL_Color loseColor = {255, 0, 0};
 	SDL_Surface *preLevel = NULL;
@@ -86,6 +92,7 @@ int main( int argc, char* args[] ) {
 	SDL_Surface *victoryText = NULL;
 	SDL_Surface *gameOverText = NULL;
 	inGamefont = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);
+	secondsfont = TTF_OpenFont("fonts/Lato-Regular.ttf", 18);
 	endFont = TTF_OpenFont("fonts/journal.ttf", 72);
 	preLevel = TTF_RenderText_Solid( inGamefont, "World 1-1", textColor );
 	lifetext1 = TTF_RenderText_Solid( inGamefont, " x  3", textColor );
@@ -127,6 +134,7 @@ int main( int argc, char* args[] ) {
 			for (int a=0; a<e_num; a++ ) {
 				myenemies[a]->resetDeath();
 			}
+			startTime = SDL_GetTicks();	// reset time upon death
 		}
 
 		// prelevel Screen
@@ -150,8 +158,10 @@ int main( int argc, char* args[] ) {
 	myGraphics.init();					// resize the game window
 	while((quitLevel==false)&&(quitGame==false)&&(win==false)) {// user has not quit
      		fps.start();					// start the frame timer
-		time = SDL_GetTicks();				// microseconds that have passed 	
-
+		SDL_Surface *seconds = NULL;
+		time = SDL_GetTicks() - startTime;				// microseconds that have passed 	
+		currentTime << "Timer: " << int(403 - (time / 1000.f));
+		seconds=TTF_RenderText_Solid( secondsfont, currentTime.str().c_str(), timeColor);
 		while(SDL_PollEvent(&event)) {			// there are events to handle
         		myMario.handle_input(event,time);	// handle events for mario
 			myFireball.handleFire(event);		// handle events for fireball
@@ -204,6 +214,7 @@ int main( int argc, char* args[] ) {
 		// reset the screen and display updated scene
 		myGraphics.clearScreen(myGraphics.getScreen());
         	myGraphics.apply_surface(0, 0, background, myGraphics.getScreen(), myMario.getCamera());
+		myGraphics.apply_surface(0, 0, seconds, myGraphics.getScreen(), NULL);
 		myMario.updateStatus();
 		myFireball.updateFire();
 		//update the enemies
@@ -292,6 +303,9 @@ int main( int argc, char* args[] ) {
 			}
 		}
 
+		currentTime.str("");
+		SDL_FreeSurface(seconds);
+
 		// update the screen
         	if(SDL_Flip(myGraphics.getScreen())==-1) {
         		return 1;
@@ -308,6 +322,12 @@ int main( int argc, char* args[] ) {
 				myMario.makeDead();
 				quitLevel = true;
 			}
+		}
+
+		// check if time is left
+		if (int(403 - (time / 1000.f))<=0) {
+			myMario.makeDead();
+			quitLevel = true;
 		}
 
 		// check if mario has reached the end
