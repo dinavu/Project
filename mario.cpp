@@ -189,10 +189,8 @@ void Mario::move() {
 		y += getHeight() /8;	// move mario up or down
 	}
 
-	while ( (y>=136) && (y<=152)  /*&& (isJumped==false)*/ ) {
-		//y=200;
+	while ( (y>=136) && (y<=152) ) {
 		y += getHeight() /8;
-		//cout << y << endl;
 	} 	
 
 	collision = 0;
@@ -267,9 +265,6 @@ void Mario::jump(int time) {
 
 // display mario's update position
 void Mario::updateStatus() {
-	//if (isCrouched==true) {		// display crouching mario
-	//	status=2;
-	//}
 	if (isJumped==true) {	// display jumping mario
 		status=3;
 		if (jumpDir==0) {
@@ -278,7 +273,6 @@ void Mario::updateStatus() {
 		else if (jumpDir==1) {
 			frame=0;
 		}
-
 	}
 	else if (xVel<0) {		// choose proper leftward movement frame
 		status=1;
