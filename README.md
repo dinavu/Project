@@ -20,6 +20,51 @@ The most up-to-date version of this Super Mario Bros prjoect can be
 found on Dina Vu's github - https://github.com/dinavu/Project
 
 
+====== HOW THE CODE WORKS ======
+
+The program that runs Super Mario Bros is largely based on the OOP
+concept of Inheritance. That being said, the file that controls our
+game logic uses Composition to include all the game's classes. That is,
+the main file, appropriately called MAIN, features parts of the game
+like Mario's lives, fireball count, and looping through collision
+detection.
+
+Outside of the MAIN file that instantiates all other classes through
+Composition, the rest of our files are classes linked through the OOP
+concept of Inheritance. The base class in the inheritance hierarchy
+displayed in the UML diagram below, is the GRAPHICS class. This class
+runs the background functions that enable the program to run, including
+image rendering, initializing all the required surfaces, colors and
+fonts. Through this class it is also possible to load images, set clips,
+and read in all the files necessary to run the game. The three classes
+that inherit from GRAPHICS are: ENEMY (which is then broken down to
+three different enemies), FIREBALL (which is Mario's power throughout
+the game), and MARIO (which controls all Mario does).
+
+ENEMY is an abstract class used to group all of the enemies under a
+single umbrella. It includes some virtual functions like those used to
+set the original enemy positions and identify their image clips. The
+three concrete classes that inherit from ENEMY are: GOOMBA, KOOPA, and
+PLANT. All of these classes are concrete and used to instantiate the
+enemies in the entirety of the level. Each class respectively refers to
+a different enemy that has unique characteristics, like Koopa's bounded
+movement left and right, Goomba's unidirectional motion, and Plant's
+location in the pipes.
+
+FIREBALL is a concrete class that holds Mario's power. By including
+FIREBALL in MAIN, Mario is able to shoot fireballs in both directions,
+while standing or jumping to try and kill enemies.
+
+MARIO is the last main concrete class in the inheritance hierarchy.
+This class includes all the function and logic required to control Mario.
+This class reads the user controls (arrow keys) to control the movement,
+check collisions with the floor and any boxes in the world. MARIO
+includes multiple status for moving right, left and jumping. MARIO also
+includes a TIMER and controls the game camera to make it follow Mario.
+
+![](https://github.com/dinavu/Project/blob/master/images/UML_Diagram.png)
+
+
 ====== INSTALLING AND RUNNING THE GAME ======
 
 To run the program and play Super Mario Bros on your computer, you must
