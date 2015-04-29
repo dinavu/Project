@@ -150,10 +150,10 @@ void Mario::set_clips() {
 	clipsJump[0].w=16;
 	clipsJump[0].h=32;
 
-	clipsJump[1].x=16*2;
-	clipsJump[1].y=32*2;
-	clipsJump[1].w=16;
-	clipsJump[1].h=32;
+	clipsLjump[0].x=16*2;
+	clipsLjump[0].y=32*2;
+	clipsLjump[0].w=16;
+	clipsLjump[0].h=32;
 
 	clipsFP[0].x=16*4;
 	clipsFP[0].y=0;
@@ -391,7 +391,11 @@ SDL_Rect *Mario::getCclip() {
 
 // get jumping clip
 SDL_Rect *Mario::getJclip() {
-	return &clipsJump[getFrame()];
+	if (jumpDir==0){
+		return &clipsJump[0];
+	} else {
+		return &clipsLjump[0];
+	}
 }
 
 // get flagpole sliding clip
@@ -422,7 +426,7 @@ int Mario::getCameray() {
 // set pipe coordinates
 void Mario::setPipes() {
 	//First pipe
-	pipes[0].x = 448; pipes[0].y = 168; pipes[0].w = 32; pipes[0].h = 32;
+	pipes[0].x = 448; pipes[0].y = 168; pipes[0].w = 32; pipes[0].h = 33;
 	pipes[1].x = 608; pipes[1].y = 152; pipes[1].w = 32; pipes[1].h = 48;
 	pipes[2].x = 736; pipes[2].y = 136; pipes[2].w = 32; pipes[2].h = 63;
 	pipes[3].x = 912; pipes[3].y = 136; pipes[3].w = 32; pipes[3].h = 63;
@@ -481,21 +485,17 @@ void Mario::checkPipeCollision() {
 		if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
 			y = pipes[i].y - marioHeight;
 			boxcollision = 1;
-			//cout << "1" << endl;
 		} else if (topA<=bottomB && topA>topB && leftA>leftB && rightA<rightB){
 			y = pipes[i].y - marioHeight;
 			boxcollision = 1;
 			collision = 1;
-			//cout << "2" << endl;
 		//check vertical
-		} else if (rightA>=leftB && leftA<leftB && topA>topB && topA<=bottomB){
+		} else if (rightA>=leftB && leftA<leftB && topA>=topB && topA<=bottomB){
 			x -= 2*xVel;
 			collision = 1;
-			//cout << "3" << endl;
 		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
 			x -= 2*xVel;
 			collision = 1;
-			//cout << "4" << endl;
 		//if no collision return false
 		} 
 	} 

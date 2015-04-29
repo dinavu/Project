@@ -27,7 +27,7 @@ int main( int argc, char* args[] ) {
 	Timer fps;						// frame rate regulator
 
 	// instantiate enemies
-	vector < Enemy* > myenemies(15);		//Create a vector of enemies
+	vector < Enemy* > myenemies(15);			//Create a vector of enemies
 
 	// Number of fireballs used
 	int fireballcount = 0;
@@ -113,7 +113,7 @@ int main( int argc, char* args[] ) {
 	SDL_Surface *gameOverText = NULL;
 	inGamefont = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);
 	secondsfont = TTF_OpenFont("fonts/Lato-Regular.ttf", 18);
-	endFont = TTF_OpenFont("fonts/journal.ttf", 72);
+	endFont = TTF_OpenFont("fonts/Lato-Regular.ttf", 72);
 	preLevel = TTF_RenderText_Solid( inGamefont, "World 1-1", textColor );
 	lifetext1 = TTF_RenderText_Solid( inGamefont, " x  3", textColor );
 	lifetext2 = TTF_RenderText_Solid( inGamefont, " x  2", textColor );
@@ -141,7 +141,6 @@ int main( int argc, char* args[] ) {
 			myMario.setX();
 			myMario.setY();
 			myFireball.resetIsFire();
-
 			Goomba1.setX(500); Goomba1.setY(168);	
 			Goomba2.setX(550); Goomba2.setY(168);
 			Goomba3.setX(350); Goomba3.setY(112);
@@ -185,7 +184,7 @@ int main( int argc, char* args[] ) {
      		fps.start();					// start the frame timer
 		SDL_Surface *seconds = NULL;
 		time = SDL_GetTicks() - startTime;				// microseconds that have passed 	
-		currentTime << "Timer: " << int(403 - (time / 1000.f));
+		currentTime << "Time: " << int(403 - (time / 1000.f));
 		seconds=TTF_RenderText_Solid( secondsfont, currentTime.str().c_str(), timeColor);
 		while(SDL_PollEvent(&event)) {			// there are events to handle
         		myMario.handle_input(event,time);	// handle events for mario
@@ -232,12 +231,12 @@ int main( int argc, char* args[] ) {
 			int killenemy = 0;
 			killenemy = myFireball.checkDeath(myenemies[j]->getX(),myenemies[j]->getY(),myenemies[j]->getWidth(),myenemies[j]->getHeight(), myenemies[j]->isDead());
 			if (killenemy==1){
-				//cout << "kill" << j << endl;
 				myenemies[j]->kill();
 			}
 		}
 
 		if (myFireball.getIsFire()){
+			marioDir=myMario.getStatus();
 			myFireball.moveFire(marioDir);
 		}
 		
@@ -247,6 +246,7 @@ int main( int argc, char* args[] ) {
 		myGraphics.apply_surface(0, 0, seconds, myGraphics.getScreen(), NULL);
 		myMario.updateStatus();
 		myFireball.updateFire();
+
 		//update the enemies
 		for (int i=0; i<e_num; i++ ) {		
 			myenemies[i]->update();
@@ -390,7 +390,7 @@ int main( int argc, char* args[] ) {
 	// victory screen
 	if (win == true) {
 		myGraphics.clearScreenB(myGraphics.getScreen());
-		myGraphics.apply_surface(240, 80, victoryText, myGraphics.getScreen(), NULL);
+		myGraphics.apply_surface(180, 80, victoryText, myGraphics.getScreen(), NULL);
 		SDL_Flip(myGraphics.getScreen());
 		SDL_Delay(2000);
 	}
@@ -398,12 +398,10 @@ int main( int argc, char* args[] ) {
 	// game over screen
 	if (win == false) {
 		myGraphics.clearScreenB(myGraphics.getScreen());
-		myGraphics.apply_surface(210, 90, gameOverText, myGraphics.getScreen(), NULL);
+		myGraphics.apply_surface(130, 90, gameOverText, myGraphics.getScreen(), NULL);
 		SDL_Flip(myGraphics.getScreen());
 		SDL_Delay(2000);
 	}
-	
-
 
 	SDL_FreeSurface(mario);
 	SDL_FreeSurface(background);
