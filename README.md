@@ -72,7 +72,6 @@ end of the level without dying. These are the controls:
 		Right	Move Right
 		Left	Move Left
 		Up	Jump
-		Down	Crouch
 	- SPACE Bar: throw fireball
 		(Note: only 1 fireball permitted at a time; trying to
 		throw more than one fireball will reset the original
@@ -96,22 +95,27 @@ What follows is a list of known bugs present in the game:
 
 - Game title screen allows to chose one or two players but gameplay
   is the same regardless.
-- Sometimes the hit box for a plant reports a hit but the plant does
-  not die.
-- Mario jumping left results in displaying the right jump sprite.
+- Sometimes the hit box for an enemy reports a hit but the enemy
+  does not die.
 - While jumping, sometimes side collisions are not immediately
-  immediately detected and Mario might pass through part of an object
+  detected and Mario might pass through part of an object
   such as pipe or block.
 - Part of the level has a narrow space between two triangular block
   sections and it is possible for Mario to be trapped there due to the
-  jump being parabolic.
+  jump being parabolic. At this point the user would have to manually
+  hit X on the display window and exit the program.
 - Fireball always fires right while Mario is jumping, even if Mario is
   facing left.
-- From Mario's starting position if Mario walks left, he will fall into
-  the ground.
+- From Mario's starting position if Mario jumps left, he will fall into
+  the ground and dies.
 - When Mario is ontop of a pipe and walks left, he drops down to a 
-  middle layer first before falling to the ground.
-- When Mario dies while jumping level restarts with him jumping, rather
-  than being still.
-
-
+  middle layer first before falling to the ground. (can be avoid by
+  just holding the left key).
+- Sometimes enemies do not respawn upon level restart.
+- The fireball can move in the backwards direction temporarily if
+  Mario is moving fast enough to cause the camera to change the
+  fireball's position.
+- When Mario vertically collides with the 1st or either of the last two
+  pipes then he ends up partway through the top of the pipe.
+- Fireballs sometimes do not fire, even when the player has fireballs
+  to fire.
