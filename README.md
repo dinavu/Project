@@ -165,3 +165,5 @@ What follows is a list of known bugs present in the game:
   pipes then he ends up partway through the top of the pipe.
 - Fireballs sometimes do not fire, even when the player has fireballs
   to fire.
+- Fireballs generally do not work on enemies after the initial set of
+  enemies.
