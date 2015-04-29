@@ -62,7 +62,7 @@ check collisions with the floor and any boxes in the world. MARIO
 includes multiple status for moving right, left and jumping. MARIO also
 includes a TIMER and controls the game camera to make it follow Mario.
 
-			INHERITANCE UML DIAGRAM
+                                                 INHERITANCE UML DIAGRAM
 ![](https://github.com/dinavu/Project/blob/master/images/UML_Diagram.png)
 
 
