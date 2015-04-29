@@ -77,7 +77,6 @@ bool Enemy::mDead(int mariox,int marioy){
     	int topB = box.y;
     	int bottomB = box.y + enemy_height;
 	//check collisions
-
 	if( death == false){
 		if (rightA>=leftB && rightA<rightB && bottomA==bottomB && bottomA>=topB){
 			collision = 1;

@@ -114,19 +114,24 @@ int Fireball::checkDeath(int enemyX, int enemyY, int enemyW, int enemyH, bool en
 	//check collisions
 	if(isFire==true){
 		if (bottomA>=topB && topA<topB && leftA>leftB && leftA<rightB){
+			//cout << "bA:" << bottomA << " tA:" << topA << " tB:" << topB << " bB:" << bottomB << endl;
+			//cout << "rA:" << rightA << " lA:" << leftA << " rB:" << rightB << " lB:" << leftB << endl;
+			//cout << "1" << endl;
 			collision = 1;
 		} else if (topA<=bottomB && topA>topB && leftA>leftB && leftA<rightB){
 			collision = 1;
 		} else if (rightA>=leftB && rightA<rightB && topA>=topB && topA<=bottomB){
 			collision = 1;
-		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){	
+		} else if (leftA<=rightB && rightA>rightB && topA>=topB && topA<=bottomB){
 			collision = 1;
 		}
 	}
 	//set death to true if enemy is hit by fireball
-	if (collision == 1){
+	if (collision == 1 && enemydead == false){
 		isFire = false;
 		return 1;
+	} else {
+		return 0;
 	}
 }
 

@@ -36,7 +36,7 @@ int main( int argc, char* args[] ) {
 	Goomba Goomba2(550, 200);
 	Goomba Goomba3(350, 112);
 	Goomba Goomba4(2220, 168);
-	Koopa Koopa1(350, 100, 300, 375);
+	Koopa Koopa1(350, 98.5, 300, 375);
 	Plant Plant1(451, 142);
 	Koopa Koopa2(1200,163.5,1135,1326);
 	Koopa Koopa3(1300,35.5,1280,1369);
@@ -227,14 +227,6 @@ int main( int argc, char* args[] ) {
 			myenemies[i]->move();
 		}
 		
-		for (int j=0; j<e_num; j++){
-			int killenemy = 0;
-			killenemy = myFireball.checkDeath(myenemies[j]->getX(),myenemies[j]->getY(),myenemies[j]->getWidth(),myenemies[j]->getHeight(), myenemies[j]->isDead());
-			if (killenemy==1){
-				myenemies[j]->kill();
-			}
-		}
-
 		if (myFireball.getIsFire()){
 			marioDir=myMario.getStatus();
 			myFireball.moveFire(marioDir);
@@ -303,6 +295,17 @@ int main( int argc, char* args[] ) {
 				}
 			}
 		}
+
+		// check if fireball has collided with an enemy
+		for (int j=0; j<e_num; j++){
+			int killenemy = 0;
+			killenemy = myFireball.checkDeath(myenemies[j]->getX(),myenemies[j]->getY(),myenemies[j]->getWidth(),myenemies[j]->getHeight(), myenemies[j]->isDead()); 
+			// if so- kill the enemy
+			if (killenemy==1 && myenemies[j]->isDead()==false){
+				myenemies[j]->kill();
+			}
+		}
+
 
 		//check if enemy is hit by fireball
 		for (int i=0; i<e_num; i++ ) {		
