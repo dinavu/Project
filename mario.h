@@ -74,7 +74,9 @@ protected:
 	int boxcollision;			// detects a box collision
 	bool death;				// true/false for alive/dead
 	SDL_Rect clipsLjump[1];			// image for mario jumping left
-
+	SDL_Rect clipsRight[4];			// images for mario moving right
+	//SDL_Rect clipsLeft[4];			// images for mario moving left
+	
 };
 
 #endif

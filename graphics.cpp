@@ -101,7 +101,7 @@ bool Graphics::load_files() {
 	koopa = load_image("images/koopa2.png");			// koopa enemy clips
 	plant = load_image("images/plant.png");				// plant enemy clips
 	inGamefont = TTF_OpenFont("fonts/Lato-Regular.ttf", 28);	// pre/mid level font
-	endFont = TTF_OpenFont("fonts/journal.ttf", 72);		// end level font
+	endFont = TTF_OpenFont("fonts/Lato-Regular.ttf", 72);		// end level font
 
 	// if there was a problem in loading the dot
 	if(mario==NULL) {

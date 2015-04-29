@@ -48,7 +48,7 @@ protected:
 	SDL_Surface* goomba;			// Goomba- enemy
 	SDL_Surface* koopa;			// Koopa- enemy
 	SDL_Surface* plant;			// Plant- enemy
-	SDL_Rect clipsRight[4];			// images for mario moving right
+
 	SDL_Rect clipsLeft[4];			// images for mario moving left
 	SDL_Rect clipsStill[1];			// image for mario crouching
 	SDL_Rect clipsJump[1];			// image for mario jumping
