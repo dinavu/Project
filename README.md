@@ -167,5 +167,3 @@ What follows is a list of known bugs present in the game:
   to fire.
 - Fireballs generally do not work on enemies after the initial set of
   enemies.
-- The main menu fails to load, immediately starting the user into a 
-  into a one player game of the first level.
